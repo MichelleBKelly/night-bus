@@ -1,3 +1,4 @@
+# Default cofig
 terraform {
   required_version = ">= 1.6"
 

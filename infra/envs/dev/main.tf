@@ -1,3 +1,4 @@
+# Default config
 terraform {
   required_version = ">= 1.6"
 
@@ -11,10 +12,14 @@ terraform {
   backend "local" {}
 }
 
+# Define the server we are running on (Do not worry about backup servers)
 provider "aws" {
   region = "ca-central-1"
 }
 
+## RUN OUR MODULES BELOW !!!!!
+# TODO: Explain wat a module is
+# Our modules are HIGHLY decoupled
 module "website" {
   source = "../../modules/website"
 
