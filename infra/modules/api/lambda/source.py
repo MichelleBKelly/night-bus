@@ -2,7 +2,7 @@ import boto3
 import json
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 # REAL L2: boto3 talks to DynamoDB. No mock data.
@@ -43,11 +43,26 @@ def _get_trip(trip_id):
     return result.get("Item")
 
 
+def _decimalize(obj):
+    # DynamoDB (boto3) rejects Python floats. Convert any float to Decimal
+    # before put_item, recursively, so fractional mileage / amounts save.
+    if isinstance(obj, float):
+        return Decimal(str(obj))
+    if isinstance(obj, dict):
+        return {k: _decimalize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_decimalize(v) for v in obj]
+    return obj
+
+
 def _hours(start, end):
-    # Times are "18:00" strings. Returns hours as a float, e.g. 5.5
+    # Times are "18:00" strings. Returns hours as a Decimal, e.g. 5.5
+    # DynamoDB needs Decimal, not float. Overnight: if end < start, add 24h.
     fmt = "%H:%M"
     delta = datetime.strptime(end, fmt) - datetime.strptime(start, fmt)
-    return round(delta.total_seconds() / 3600, 2)
+    if delta.total_seconds() < 0:
+        delta += timedelta(days=1)
+    return Decimal(str(round(delta.total_seconds() / 3600, 2)))
 
 
 def lambda_handler(event, context):
@@ -56,7 +71,10 @@ def lambda_handler(event, context):
     path = http.get("path", "/")
     query = event.get("queryStringParameters") or {}
     try:
-        body = json.loads(event.get("body") or "{}")
+        # parse_float=Decimal: fractional numbers in the request become
+        # Decimal, not float, so boto3 / DynamoDB accepts them in put_item.
+        body = json.loads(event.get("body") or "{}", parse_float=Decimal)
+        body = _decimalize(body)
     except json.JSONDecodeError:
         body = {}
     parts = [p for p in path.split("/") if p]
@@ -94,7 +112,7 @@ def lambda_handler(event, context):
             "manifest": [],
             "expenses": [],
         }
-        trips_table.put_item(Item=trip)
+        trips_table.put_item(Item=_decimalize(trip))
         return _response(201, trip)
 
     # GET /trips/{tripId}
@@ -116,7 +134,7 @@ def lambda_handler(event, context):
             trip["totalMileage"] = trip["endMileage"] - trip["startMileage"]
         if trip.get("endTime") and trip.get("startTime"):
             trip["driverHours"] = _hours(trip["startTime"], trip["endTime"])
-        trips_table.put_item(Item=trip)
+        trips_table.put_item(Item=_decimalize(trip))
         return _response(200, trip)
 
     # POST /trips/{tripId}/complete - calculate pay for real
@@ -130,9 +148,10 @@ def lambda_handler(event, context):
         trip["driverHours"] = _hours(trip["startTime"], trip["endTime"])
         driver = drivers_table.get_item(Key={"driverId": trip["driverId"]}).get("Item")
         rate_cents = driver.get("hourlyRateCents", 0) if driver else 0
-        trip["payDueCents"] = int(trip["driverHours"] * rate_cents)
+        # Both sides Decimal (or int) — never float * Decimal, which errors.
+        trip["payDueCents"] = int(Decimal(str(trip["driverHours"])) * Decimal(str(rate_cents)))
         trip["status"] = "completed"
-        trips_table.put_item(Item=trip)
+        trips_table.put_item(Item=_decimalize(trip))
         return _response(200, trip)
 
     # GET /trips/{tripId}/stops and POST /trips/{tripId}/stops
@@ -147,7 +166,7 @@ def lambda_handler(event, context):
                 return _response(400, {"error": "Max 15 stops per trip"})
             stop = {"stopId": str(uuid.uuid4())[:8], **body}
             trip["stops"] = trip.get("stops", []) + [stop]
-            trips_table.put_item(Item=trip)
+            trips_table.put_item(Item=_decimalize(trip))
             return _response(201, stop)
 
     # GET /trips/{tripId}/manifest and POST /trips/{tripId}/manifest
@@ -161,7 +180,7 @@ def lambda_handler(event, context):
             if len(trip.get("manifest", [])) >= 9:
                 return _response(400, {"error": "Bus is full - max 9 passengers"})
             trip["manifest"] = trip.get("manifest", []) + [body]
-            trips_table.put_item(Item=trip)
+            trips_table.put_item(Item=_decimalize(trip))
             return _response(201, body)
 
     # GET /trips/{tripId}/expenses and POST /trips/{tripId}/expenses
@@ -174,7 +193,7 @@ def lambda_handler(event, context):
         if method == "POST":
             expense = {"expenseId": str(uuid.uuid4())[:8], **body}
             trip["expenses"] = trip.get("expenses", []) + [expense]
-            trips_table.put_item(Item=trip)
+            trips_table.put_item(Item=_decimalize(trip))
             return _response(201, expense)
 
     # GET /members?q= and GET /members/{memberId}
