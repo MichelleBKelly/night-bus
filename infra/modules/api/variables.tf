@@ -12,3 +12,8 @@ variable "user_pool_id" {
   description = "ID of the Cognito user pool from the accounts module."
   type        = string
 }
+
+variable "user_pool_client_id" {
+  description = "Cognito app client ID for the Gateway authorizer"
+  type        = string
+}

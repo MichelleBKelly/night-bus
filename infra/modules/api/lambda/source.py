@@ -81,7 +81,22 @@ def lambda_handler(event, context):
 
     # GET /me
     if method == "GET" and path == "/me":
-        return _response(200, {"userId": "driver-1", "name": "Test Driver", "role": "driver"})
+        claims = event.get("requestContext", {}).get("authorizer", {}).get("jwt", {}).get("claims")
+        if not claims:
+            return _response(401, {"error": "Unauthorized"})
+        groups = claims.get("cognito:groups") or []
+        if isinstance(groups, str):
+            try:
+                groups = json.loads(groups)
+            except json.JSONDecodeError:
+                groups = [group.strip() for group in groups.strip("[]").split(",") if group.strip()]
+            if isinstance(groups, str):
+                groups = [groups]
+        return _response(200, {
+            "userId": claims.get("sub"),
+            "name": claims.get("cognito:username") or claims.get("email"),
+            "role": groups[0] if groups else "driver",
+        })
 
     # GET /trips?driverId=
     if method == "GET" and path == "/trips":
