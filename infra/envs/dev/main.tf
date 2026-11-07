@@ -21,8 +21,8 @@ module "website" {
   name_prefix = "night-bus-dev"
 }
 
-module "accounts" {
-  source = "../../modules/accounts"
+module "auth" {
+  source = "../../modules/auth"
 
   name_prefix = "night-bus-dev"
 }
