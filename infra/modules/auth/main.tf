@@ -73,7 +73,7 @@ resource "aws_iam_role_policy_attachment" "login_basic" {
 resource "aws_lambda_function" "login" {
   function_name    = "${var.name_prefix}-login"
   role             = aws_iam_role.login.arn
-  runtime          = "nodejs22.x"
+  runtime          = "python3.13"
   handler          = "index.handler"
   filename         = data.archive_file.login.output_path
   source_code_hash = data.archive_file.login.output_base64sha256
