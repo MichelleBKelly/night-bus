@@ -31,3 +31,11 @@ module "auth" {
 
   name_prefix = "night-bus-dev"
 }
+
+module "api" {
+  source = "../../modules/api"
+
+  name_prefix   = "night-bus-dev"
+  user_pool_arn = module.accounts.user_pool_arn
+  user_pool_id  = module.accounts.user_pool_id
+}
