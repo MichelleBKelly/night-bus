@@ -48,7 +48,7 @@ resource "aws_iam_role_policy" "geo_routes" {
           "geo-routes:CalculateRoutes"
         ]
 
-        Resource = "arn:aws:geo-routes:ca-central-1::provider/default"
+        Resource = "arn:aws:geo-routes:us-east-2::provider/default"
       },
       {
         Effect = "Allow"
@@ -57,7 +57,7 @@ resource "aws_iam_role_policy" "geo_routes" {
           "geo-places:Geocode"
         ]
 
-        Resource = "arn:aws:geo-places:ca-central-1::provider/default"
+        Resource = "arn:aws:geo-places:us-east-2::provider/default"
       }
     ]
   })
@@ -94,8 +94,7 @@ resource "aws_apigatewayv2_route" "calculate_route" {
   api_id             = var.api_id
   route_key          = "POST /calculate-route"
   target             = "integrations/${aws_apigatewayv2_integration.route_planner.id}"
-  authorization_type = "JWT"
-  authorizer_id      = var.authorizer_id
+  authorization_type = "NONE"
 }
 
 resource "aws_lambda_permission" "allow_apigw" {

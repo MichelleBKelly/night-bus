@@ -14,7 +14,7 @@ terraform {
 
 # Define the server we are running on (Do not worry about backup servers)
 provider "aws" {
-  region = "ca-central-1"
+  region = "us-east-2"
 }
 
 ## RUN OUR MODULES BELOW !!!!!

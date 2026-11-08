@@ -122,7 +122,7 @@ resource "aws_apigatewayv2_authorizer" "cognito" {
 
   jwt_configuration {
     audience = [var.user_pool_client_id]
-    issuer   = "https://cognito-idp.ca-central-1.amazonaws.com/${var.user_pool_id}"
+    issuer   = "https://cognito-idp.us-east-2.amazonaws.com/${var.user_pool_id}"
   }
 }
 
@@ -137,16 +137,14 @@ resource "aws_apigatewayv2_route" "proxy" {
   api_id             = aws_apigatewayv2_api.api.id
   route_key          = "ANY /{proxy+}"
   target             = "integrations/${aws_apigatewayv2_integration.l2.id}"
-  authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
+  authorization_type = "NONE"
 }
 
 resource "aws_apigatewayv2_route" "root" {
   api_id             = aws_apigatewayv2_api.api.id
   route_key          = "ANY /"
   target             = "integrations/${aws_apigatewayv2_integration.l2.id}"
-  authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
+  authorization_type = "NONE"
 }
 
 resource "aws_apigatewayv2_stage" "default" {
