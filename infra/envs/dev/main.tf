@@ -23,7 +23,8 @@ provider "aws" {
 module "website" {
   source = "../../modules/website"
 
-  name_prefix = "night-bus-dev"
+  name_prefix  = "night-bus-dev"
+  frontend_dir = "${path.module}/../../../frontend"
 }
 
 module "auth" {
