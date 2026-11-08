@@ -2,7 +2,7 @@
 
 ## Project context
 - Goal: Replace the paper trip sheet for KW AccessAbility's one accessible bus, which runs occasional out-of-town trips. Drivers log each trip. Staff review it and report bus costs (kilometres, hours, fuel, pay, repairs) separately from the rest of the agency.
-- Users / audience: Part-time paid drivers, including a new team member with no background, and staff (Ed Crusoe, executive director; Rob Wiseman). Members phone in to register and do not use the app. Staff are older adults, and most members have vision loss.
+- Users / audience: Part-time paid drivers, including a new team member with no background, and staff (Edward Faruzel, executive director; Robert Wismer). Members phone in to register and do not use the app. Staff are older adults, and most members have vision loss.
 - Constraints: The bus doesn't exist yet (retired GRT Mobility Plus bus expected next spring), drivers aren't hired yet, and funding rules for driver hours are unknown. Member registration stays in the existing Microsoft Access database. Senior-friendly UI: large type, high contrast, plain language, few steps.
 - Role / team / timeline: CommuniHacks 2026, Sat 7 Nov 1 PM to Sun 8 Nov 2 PM. Role and team: not stated.
 
@@ -112,7 +112,7 @@
 - **Rationale:** "We left live GPS tracking out of v1 because the org never asked for it and members don't use the app... Our limited build time went to what a first-day driver and the director actually rely on: a clear trip log and a monthly report."
 - **Tradeoffs:** No live location for staff during late returns.
 - **Impact / where in code:** Scope only. Listed as out of scope in the bus-service rule.
-- **Evidence:** Rob Wiseman interview (no request for tracking).
+- **Evidence:** Robert Wismer interview (no request for tracking).
 - **Case study angle:** Scoping to the real job instead of the obvious feature.
 
 ### D-002: Member registration stays in the Access database
@@ -125,7 +125,7 @@
 - **Rationale:** From the interview: staff already enter new members live, which matters because so many members have vision loss.
 - **Tradeoffs:** The member list in the app is sample data until there is an import.
 - **Impact / where in code:** `ROSTER` in `data.js` is a stand-in.
-- **Evidence:** Rob Wiseman interview.
+- **Evidence:** Robert Wismer interview.
 
 ### D-003: Screen titles name the task, not the trip
 - **Date:** 2026-11-07
@@ -306,7 +306,7 @@
 - **Rationale:** Not stated by the user (inferred: the bus layout is 6 wheelchair spaces and 3 ambulatory seats, so capacity has two parts).
 - **Tradeoffs:** Capacity is hard-coded; modifications could allow up to 5 seats.
 - **Impact / where in code:** `CHAIR_SPACES`, `SEAT_SPACES`, `spacesLeft`, `spaceText`.
-- **Evidence:** Layout from the Rob Wiseman interview.
+- **Evidence:** Layout from the Robert Wismer interview.
 
 ### D-018: Same plain label for Wheelchair and Seat; wheelchair users listed first
 - **Date:** 2026-11-07
@@ -330,7 +330,7 @@
 - **Rationale:** User: "ill discard that idea bc Rob didnt mention anything ab it and ig people have their seats preferred or choose on the spot bc its no big deal."
 - **Tradeoffs:** If boarding order or securing wheelchairs turns out to need a plan, there's no place for it yet.
 - **Impact / where in code:** none (feature not built).
-- **Evidence:** Absence in the Rob Wiseman interview.
+- **Evidence:** Absence in the Robert Wismer interview.
 - **Case study angle:** Resisting a feature the research didn't support.
 
 ### D-020: Remove the "Always the same" card from the run form
@@ -481,7 +481,7 @@
 - **Date:** 2026-11-07
 - **Area:** UI / UX flow
 - **Status:** Active (supersedes the bar in D-031)
-- **Decision:** A small "Ed ▾" button sits at the top right, on the same line as the status tag, so it adds no height. Tapping it opens a panel with the full name, the role and a Sign out button. Tapping elsewhere or pressing Escape closes it. Screen readers hear "Ed Crusoe, account".
+- **Decision:** A small "Ed ▾" button sits at the top right, on the same line as the status tag, so it adds no height. Tapping it opens a panel with the full name, the role and a Sign out button. Tapping elsewhere or pressing Escape closes it. Screen readers hear "Edward Faruzel, account".
 - **Problem / context:** User: "its too big and clanky. maybe just keep like profile and then if u click itll show like sing out ... it takes too much space rn".
 - **Alternatives considered:** The full-width bar (D-031).
 - **Rationale:** User's words above.
@@ -541,7 +541,7 @@
 - **Date:** 2026-11-07
 - **Area:** UX flow / Data
 - **Status:** Active
-- **Decision:** After "Mark reviewed", the staff home opens with a status banner: "✓ Blue Jays game is reviewed". It adds "Your corrections are saved." only if a number changed, then "Its kilometres, hours and costs are in the bus totals." An Undo button puts the trip back to Waiting for review and keeps any corrections. The banner shows once. The trip stores who reviewed it, the date and time, and whether numbers were corrected. Its details show "Reviewed: Ed Crusoe, today at 19:57, numbers corrected" to staff and to the driver.
+- **Decision:** After "Mark reviewed", the staff home opens with a status banner: "✓ Blue Jays game is reviewed". It adds "Your corrections are saved." only if a number changed, then "Its kilometres, hours and costs are in the bus totals." An Undo button puts the trip back to Waiting for review and keeps any corrections. The banner shows once. The trip stores who reviewed it, the date and time, and whether numbers were corrected. Its details show "Reviewed: Edward Faruzel, today at 19:57, numbers corrected" to staff and to the driver.
 - **Problem / context:** User: "has to show basic confirmation or something, think it thru, when the trip DOES get reviewed".
 - **Alternatives considered:** A separate confirmation screen (an extra tap); a toast that disappears (too fast for older users).
 - **Rationale:** User's words above. Inferred: Undo protects against mis-taps, and the review record gives funders and the driver an audit trail.
@@ -637,7 +637,7 @@
 - **Date:** 2026-11-07
 - **Area:** UI
 - **Status:** Active
-- **Decision:** On every trip screen, the boxed tag above the h1 ("Not sent yet", "Waiting for review") is gone. Status is now a row in the trip details box: "Not sent to Priya yet", "Sent to Priya", "On the road", "Waiting for review", or "Reviewed by Ed Crusoe, today at 7:57 PM". The separate "Reviewed" row is folded into it. Driver step labels ("Step 2 of 4") and the driver home's "Assigned to you" are plain bold text, with no box.
+- **Decision:** On every trip screen, the boxed tag above the h1 ("Not sent yet", "Waiting for review") is gone. Status is now a row in the trip details box: "Not sent to Priya yet", "Sent to Priya", "On the road", "Waiting for review", or "Reviewed by Edward Faruzel, today at 7:57 PM". The separate "Reviewed" row is folded into it. Driver step labels ("Step 2 of 4") and the driver home's "Assigned to you" are plain bold text, with no box.
 - **Problem / context:** User: "why does Not sent yet take that much space and it also looks like a button?"
 - **Alternatives considered:** A smaller tag (still reads as a button).
 - **Rationale:** User's words above. Inferred: it matches D-033, where trip rows already show status as plain text.
@@ -1154,7 +1154,530 @@
 - **Impact / where in code:** `ORG` in data.js (used by `document.title` and the sign-in meta), and the `<title>` of every HTML page, including the redirect pages in driver/ and staff/.
 - **Evidence:** User decision.
 
+### D-091: The app is called "AccessBus"; the organization stays "KW AccessAbility"
+- **Date:** 2026-11-08
+- **Area:** Copy / Brand
+- **Status:** Active (partly replaces D-090)
+- **Decision:** Page titles read "<screen> · AccessBus". Sign-in opens with the agency's logo, "AccessBus", and "KW AccessAbility" underneath, replacing the "KW AccessAbility bus" meta line. "night-bus" is only the repo name.
+- **Problem / context:** The app needed a short name of its own. The user chose "AccessBus".
+- **Tradeoffs:** Two names on screen, but the org name still appears on the first screen.
+- **Impact / where in code:** `APP` and `setTitle` in data.js, the brand lockup in `renderSignIn`, `<title>` in every HTML page, `assets/accessbus-mark.png`.
+- **Evidence:** User decision.
+
+### D-092: Mockup direction: the paper trip sheet in KW AccessAbility's colours, with a bolder driver side
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Proposed (first 3 screens up for review: driver Today, driver Step 1, staff Trips)
+- **Decision:** Keep every wireframe layout and restyle only the look. Brand teal `#007C84` is the action colour (buttons, focus, selection). Brand orange `#F2682A` marks driver screens with a header band (dark text on orange) and highlights the card that holds the next action. Trip facts are ruled lines like a paper form. Type is Atkinson Hyperlegible Next. Inputs keep the strong 2px dark border. Driver screens get 64px buttons and big, evenly spaced odometer-style digits for readings. Staff screens stay calm, on white.
+- **Problem / context:** The user wanted a direction that is senior-friendly, intuitive, and doesn't look vibecoded or change the wireframes. They also wanted the driver side bolder than the staff side.
+- **Tradeoffs:** White text on orange fails contrast (3.1:1), so orange never carries white text and teal handles every button. Rounded corners soften the wireframe's square look. The Google font needs a connection; the system font is the fallback.
+- **Impact / where in code:** tokens.css, components.css, style.css; `mount()` in data.js wraps a driver screen's top into `.masthead` and sets `data-role` on the screen.
+- **Evidence:** Colours sampled from the agency logo. Contrast measured: teal and white 5.0:1, ink on orange 5.0:1. Atkinson Hyperlegible was designed by the Braille Institute for low-vision readers.
+
+### D-093: Direction applied to every screen, with three fixes
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active (D-092 approved by the user)
+- **Decision:** (1) The orange "needs you" highlight goes only on a card that holds the main action and no form fields, like Waiting for review. Add a member, Add a repair and Add a driver stay white. (2) "Sign in" / "Aboard" on member pickup is an outlined teal pill that fills solid teal once the member is aboard (`.tag-action`). Plain labels like Driver/Staff on the sign-in list stay grey pills. (3) Driver time fields grow to 64px with 24px digits to match the kilometre readings.
+- **Problem / context:** After the restyle, forms turned orange too, which diluted the signal. The member "Sign in" tags looked like passive labels, so a driver might not know to tap them. Time fields looked small next to the odometer field.
+- **Tradeoffs:** The highlight rule relies on `:has()`, which current Safari, Chrome and Firefox all support.
+- **Impact / where in code:** components.css (`.card:has(...)`, `.tag-action`, driver time inputs); `pressRow` in data.js adds `tag-action`.
+- **Evidence:** Checked in the browser at 375px: every driver step, sent screen, staff Trips, Review, Members, Drivers, Repairs, trip setup, profile menu, sign-in.
+
+### D-094: Softer driver header; bold labels stacked above values
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active (replaces D-077's inline "Label: value" and D-092's full-orange band)
+- **Decision:** (1) The driver header band is soft peach `#FBDCCB`, not full brand orange. Full orange stays only in the small step/status pill (dark text, 5:1). The "needs you" card border softens to `#EE9A6E`. (2) Every fact shows a bold 16px label on its own line with the value in regular 18px under it, and the colons are gone. Bus total tiles get bold labels too.
+- **Problem / context:** The user found the full orange band too bright and tiring. They also wanted the labels (Date, Pickup, Drop-off) bold instead of the values, because labels are what people scan for.
+- **Tradeoffs:** The fact list gets a little taller. The driver side is less loud, but still clearly different from staff.
+- **Impact / where in code:** tokens.css (`--driver-band`, `--highlight-line`), components.css (`.masthead`, `.fact`, `.tile dt`), `facts()` and `tiles()` in data.js drop the ": ".
+- **Evidence:** User feedback on the first mockups. Contrast: ink on peach 12:1.
+
+### D-095: "Quiet white" colour treatment and Public Sans
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active (replaces the colour part of D-094 and the font in D-092)
+- **Decision:** Orange appears only in small doses. On driver screens that's a 5px brand-orange line under a white header, plus the step/status pill (light orange tint, darker orange text `#A3461A`, 5.5:1). The "Waiting for review" card is white with a darker grey edge instead of a peach fill. Teal `#007C84` stays the button colour. The font is Public Sans instead of Atkinson Hyperlegible Next.
+- **Problem / context:** Even the peach version felt too bright. The two brand colours are hard to use together in large areas. The user also disliked Atkinson's quirky letter shapes (slashed zero, odd "a").
+- **Tradeoffs:** The driver side is now set apart by size (bigger title, buttons and readings) and the orange line, not by a coloured band. Public Sans is less distinctive but calmer.
+- **Impact / where in code:** tokens.css (font import, `--orange-tint`, `--orange-text`), components.css (`.masthead`, the next-action card rule).
+- **Evidence:** User picked option A and font 1 from a side-by-side comparison of three colour treatments and five fonts.
+
+### D-096: The next-action card has no outline and a barely-there cyan fill
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active (replaces D-095's darker-edge card)
+- **Decision:** A card holding the screen's main action and no form fields (like "Waiting for review" on the staff home) has no border and a very light cyan fill `#F0F7F7`. Its fact dividers soften to `#D4E4E5` to match.
+- **Problem / context:** The user found the dark outline heavy and wanted the card only just set apart from the page.
+- **Tradeoffs:** The card stands out less, so the heading and the teal button do more of the work.
+- **Impact / where in code:** tokens.css (`--next-fill`, `--next-line`), components.css (the next-action card rule).
+- **Evidence:** User request while reviewing the staff home.
+
+### D-097: Section headings are deep teal; orange stays out of the staff side
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** Every h2 (section and card headings like "Waiting for review", "Open trips", "Who can board") is deep teal `#155E63` (7.5:1 on white). Screen titles (h1) and body text stay dark ink. Orange is limited to the driver header line and step pill.
+- **Problem / context:** The user wanted headings in a brand colour. Eight options were compared: teal, deep teal and dark orange text, orange bar, teal underline, an orange dot, and two "reversed" versions with an orange card and button. Orange didn't sit well in any of them.
+- **Tradeoffs:** Headings are a little less dark than the body text, but the difference in size and weight keeps them clearly headings.
+- **Impact / where in code:** tokens.css (`--heading`), the `h2` rule in style.css.
+- **Evidence:** User picked option 2 from the side-by-side page.
+
+### D-098: Count boxes put the label first; spaces read "4 of 6 free"
+- **Date:** 2026-11-08
+- **Area:** UI / Copy
+- **Status:** Active (updates D-017's wording)
+- **Decision:** In summary boxes (Who can board, This trip), each item is a bold label with its number right under it, kept tight together, and a ruled line separates one item from the next. Space counts read "4 of 6 free", "Full", or "2 too many" (was "4 left" and "2 over"). The same wording shows in Set up this trip.
+- **Problem / context:** Every line was 8px apart, so "Wheelchair spaces" sat as close to "Full" as to its own "4 left", and you couldn't tell which number went with which label. The number also came before its label, unlike the trip details above. "4 left" didn't say out of how many, and "over" was unclear.
+- **Tradeoffs:** "4 of 6 free" is longer, so the driver count size drops from 38px to 32px to fit on a phone.
+- **Impact / where in code:** `metric()` and `spaceText()` in data.js, `.summary-box`, `.metric`, `.metric-label` in components.css.
+- **Evidence:** User feedback on the driver home.
+
+### D-099: Driver header is plain; orange lives only in the logo
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active (replaces the driver header in D-092, D-094 and D-095)
+- **Decision:** Driver screens open like staff screens: the step or status ("Step 1 of 4", "Assigned to you") is a quiet line of grey bold text above a normal 32px title. The orange line, the orange pill and the oversized 38px heavy title are gone. Brand orange now appears only in the logo on sign-in. The driver side is still bolder where it matters: 64px buttons and large kilometre and time fields.
+- **Problem / context:** The user said the pill and the full-width orange line looked templated and AI-made.
+- **Tradeoffs:** Driver and staff screens now look nearly the same at the top. What sets the driver side apart is its larger controls.
+- **Impact / where in code:** components.css (`.masthead`), tokens.css (orange tint tokens removed). The `.masthead` wrapper in `mount()` stays, so the header can be styled again later.
+- **Evidence:** User feedback on the driver home.
+
+### D-100: The page background is white, edge to edge
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** The page background matches the white screen column, and the column's shadow is gone. On a wide window the content sits centred on plain white, with no tinted bands either side.
+- **Problem / context:** On any window wider than the 480px column, light cyan bands showed left and right of the white screen. The user found them distracting.
+- **Tradeoffs:** On desktop there's no visible edge to the phone-width column, so it reads as a narrow page, not a framed phone.
+- **Impact / where in code:** tokens.css (`--bg`, removed `--shadow-screen`), components.css (removed the `.screen` shadow rule).
+- **Evidence:** User feedback.
+
+### D-101: More space under the top bar and after the main button
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** On driver screens, the gap between the top bar (status or back link, plus the name menu) and the step/title below grows from 16px to 32px. Anywhere a main button sits directly on the screen with content after it (like "Start this trip"), it gets 16px of extra space below, 40px in total.
+- **Problem / context:** The status line crowded the title, and the "Who can board" card started too soon after "Start this trip".
+- **Tradeoffs:** Pages get a little longer.
+- **Impact / where in code:** components.css (`.masthead > .screen-top + *`, `.screen > .btn-primary:not(:last-child)`).
+- **Evidence:** User feedback on the driver home.
+
+### D-102: "Who can board" shows two tiles: booked/capacity plus a plain note
+- **Date:** 2026-11-08
+- **Area:** UI / Copy
+- **Status:** Active (replaces the driver-home box in D-098; Set up this trip keeps "4 of 6 free")
+- **Decision:** Two equal tiles side by side, "Wheelchairs" and "Seats". Each shows booked out of capacity ("2/6", "3/3"), all in one style (bold, 30px), plus a note underneath in the label's grey, one weight heavier (500): "4 free", "Full", or "1 too many" in red. The tiles use the barely-there cyan `#F0F7F7`. The shared light fill drops from `#E3EEEE` to `#EEF5F5`, so banners and summary boxes are lighter too. Count numbers drop from 800 weight at 32px to 700 at 28px.
+- **Problem / context:** The stacked box felt too bold and too cyan, and was harder to compare at a glance. The user sketched two side-by-side squares with "n/total".
+- **Tradeoffs:** "2/6" shows what's booked, not what's free, so the note under it spells out "4 free" for the driver. The labels are shortened to "Wheelchairs" so they fit half the width on a phone.
+- **Impact / where in code:** `spaceTiles()` in data.js (driver home), components.css (`.space-tiles`, `.space-tile`, lighter `.summary-box`, `.counter`), tokens.css (`--fill`, `--fill-strong`).
+- **Evidence:** User sketch and feedback.
+
+### D-103: Space tiles lead with the answer: label, then "4 free", then "2 of 6 booked"
+- **Date:** 2026-11-08
+- **Area:** UI / Copy
+- **Status:** Active (replaces the tile content in D-102; the two-tile layout stays)
+- **Decision:** Each tile reads top to bottom, darkest to quietest. First the label ("Wheelchairs", dark, 16px medium), then the answer ("4 free", "Full" or "1 too many" in red; 28px medium), then the context ("2 of 6 booked", grey 16px regular). Nothing is bold. Side padding drops to 14px so the context fits one line on a 375px phone.
+- **Problem / context:** The label and the note were both grey and almost the same size, so the number sat between two lines that looked equally important. And the thing a driver needs ("is there room?") was the weakest text, while "2/6" needed mental math.
+- **Tradeoffs:** The booked count moves to small text. Drivers who want the exact number still have it.
+- **Impact / where in code:** `spaceTiles()` in data.js, components.css (`.space-label`, `.space-answer`, `.space-note`, `.space-tile` padding).
+- **Evidence:** Mobbin references: [Fitbit "Exercise days"](https://mobbin.com/screens/10d034c3-883a-4e3f-aa84-6821c56ff632) (dark label, large regular-weight value, grey caption), [Google Health key metrics](https://mobbin.com/screens/b7231d16-2f01-45bc-b110-02d07111e974) (same order), [Airbnb availability](https://mobbin.com/screens/04405643-4d8a-45f2-bbdf-f1532201bb74) ("10 spots left" in plain words). The user picked option A.
+
+### D-104: Space tiles show "2/6" with the same count in words underneath
+- **Date:** 2026-11-08
+- **Area:** UI / Copy
+- **Status:** Active (replaces the middle and bottom lines in D-103)
+- **Decision:** Each tile shows the label ("Wheelchairs", "Seats"), then booked/capacity in one style ("2/6", "3/3"; 28px semibold, one step heavier than before), then the same count in words in grey: "2 out of 6 booked". When a side is full, the words line reads "All seats booked" or "All spaces booked". When overbooked, it reads "1 too many", and the count turns red. The "2/6" is hidden from screen readers, since the words line already says it.
+- **Problem / context:** The user preferred the count itself as the main line, with a plain sentence to explain it.
+- **Tradeoffs:** At 375px the words line wraps to two lines in both tiles. It wraps evenly, so the tiles stay the same height.
+- **Impact / where in code:** `spaceTiles()` in data.js, components.css (`.space-answer` semibold, red when overbooked), tokens.css (Public Sans 600, `--weight-semibold`).
+- **Evidence:** User direction.
+
+### D-105: Member rows: thin lines, grey wheelchair mark, teal drop-off chips
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** List row dividers go from 2px to 1px everywhere. The wheelchair icon next to a name is grey `#6B7F82` (4.2:1). The drop-off icon (house, office, pin) is brand teal inside a 44px round chip with the light cyan `#F0F7F7`.
+- **Problem / context:** The member list felt clunky: heavy lines, and every icon in the same black as the names, so nothing guided the eye.
+- **Tradeoffs:** Thinner lines separate rows a little less, but the row spacing still groups each member clearly. Orange was left off the icons, since it hasn't sat well anywhere else.
+- **Impact / where in code:** components.css (`.list-row` and `button.list-row` borders, `.member-name .member-icon`, `.drop-icon`), tokens.css (`--icon-soft`).
+- **Evidence:** User feedback on the driver home.
+
+### D-106: List rows: name and detail sit tight, rows breathe, no line after the last
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** In stacked rows (name over detail), the gap between the two lines drops from 8px to 2px. Rows in a list get 14px above and below (was 8px). The last item in a list has no divider under it. Boxed trip rows keep their own border. The space counts ("2/6", "3/3") go up to bold (700).
+- **Problem / context:** Names floated away from their drop-off line, the dividers crowded the rows, a closing line under the last member looked unfinished, and the counts were too light next to the labels.
+- **Tradeoffs:** Lists get slightly taller.
+- **Impact / where in code:** style.css (`.screen li.list-row` padding), components.css (`.stack` gap, the last-child rule, `.space-answer` weight). Applies to every list, including Team on sign-in.
+- **Evidence:** User feedback on the driver home.
+
+### D-107: Trip detail labels are deep teal
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** The bold labels in trip details (Date, Pickup, Drop-off, Pay, Location, Driver, Distance) use the heading colour, deep teal `#155E63` (7.5:1 on white and on the light cyan card). Values stay dark ink.
+- **Problem / context:** The user wanted the labels set apart from the values with brand colour, to match the section headings.
+- **Tradeoffs:** More teal on screen, but always on small bold labels, never on the information itself.
+- **Impact / where in code:** components.css (`.fact dt`).
+- **Evidence:** User request.
+
+### D-108: A new section gets a 48px break from the block before it
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** A heading-led section ("Your past trips", "Open trips", "Bus totals") that follows a card, another section or a form starts 48px below it (was 24px after a card, 40px after a section).
+- **Problem / context:** "Your past trips" started right under the Who can board card and read as part of it.
+- **Tradeoffs:** Pages get a little longer.
+- **Impact / where in code:** components.css (`.screen > :is(.plain, .card, form) + .plain`).
+- **Evidence:** User feedback on the driver home.
+
+### D-109: Bus totals: teal label on top, lighter value, thin lines
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** The 2×2/2×3 grid layout stays. In each cell, the label comes first in deep teal (16px, medium 500), with the value under it in dark ink (22px, bold 700, proportional digits with -0.01em tracking so "186 km" and "$2,873.55" sit tight). Before, both were bold and the value was 800 weight at 24px. Grid lines go from 2px to 1px.
+- **Problem / context:** Everything in the grid was bold and heavy, so nothing stood out and it felt loud.
+- **Tradeoffs:** The values are less shouty, but they're still the darkest and largest text in each cell.
+- **Impact / where in code:** components.css (`.tiles`, `.tile`, `.tile dt`, `.tile dd`).
+- **Evidence:** Mobbin: [AllTrails "Progress"](https://mobbin.com/screens/b1ec81de-e8ff-4800-8308-efa22e4cd428) and [Linktree "Audience"](https://mobbin.com/screens/b4fc5ecf-47a1-42d5-950f-38b1934c8221) both put a light label on top, keep only the value weighted, and use thin borders.
+
+### D-110: Secondary buttons are a soft teal fill, not a white outlined box
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** Secondary buttons (Undo, Sign out, and any other `.btn-secondary`) use the soft teal fill `#DCEBEC` with deep teal text `#155E63` (6:1) and no outline. They darken slightly to `#CBE1E2` on hover and press. Primary buttons stay solid teal with white text.
+- **Problem / context:** The white button with a 2px black outline looked like a leftover from the wireframes.
+- **Tradeoffs:** Inside a light cyan notice the button sits close to its background, but its darker fill and teal text still mark it clearly as a button.
+- **Impact / where in code:** components.css (`.btn-secondary`, its hover and active states, `.notice .btn-secondary`), tokens.css (`--secondary-hover`).
+- **Evidence:** User feedback on the "reviewed" notice.
+
+### D-111: Member rows always read "Drop-off: [place]", with the place darker
+- **Date:** 2026-11-08
+- **Area:** Copy / UI
+- **Status:** Active (replaces D-088's "Dropped off at" on finished trips)
+- **Decision:** Every member row, before and after a trip, reads "Drop-off: 14 Birch Ave, Kitchener". The "Drop-off:" label and the place share the same grey. The place is one weight heavier (medium, 500). A darker colour was tried and dropped as too noisy.
+- **Problem / context:** Finished trips said "Dropped off at …" while planned trips said "Drop-off: …". Two phrasings for the same thing, and the address, which is what matters, was as light as its label.
+- **Tradeoffs:** On a finished trip, "Drop-off:" no longer says in words that it already happened. The trip's status and the review screen around it make that clear.
+- **Impact / where in code:** `dropRow()` in data.js (no more verb argument; the place is in `.drop-place`), components.css (`.drop-place`).
+- **Evidence:** User request.
+
+### D-112: Members, Drivers and Repairs become one grouped "Manage" list
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active
+- **Decision:** The staff home replaces three separate sections (heading + boxed link each) with one "Manage" heading and one bordered list. Each row has a teal icon in a soft round chip (people for Members, bus for Drivers, wrench for Repairs), a bold title, a one-line summary ("6 members · 3 use a wheelchair", "2 drivers · Priya, Tom", "5 repairs · Latest: Brake inspection") and a chevron. With nothing on the list yet, the summary reads "No drivers yet. Add the first one".
+- **Problem / context:** Each link said its name twice ("Members", then "6 members"), so it took three headings and three boxes to show three links.
+- **Tradeoffs:** Rows are still large (80–107px tall) with clear names, so the list stays senior-friendly. On a 375px phone the longer summaries wrap to two lines.
+- **Impact / where in code:** `manageList()`, `manageRow()`, `MANAGE_ICONS` and the end of the staff home render in data.js, components.css (`.manage-list`, `.manage-row`, `.manage-icon`). On hover the row turns light cyan and the icon circle turns white so it stays visible (the icon stays teal).
+- **Evidence:** Mobbin: [Luma "Manage Event"](https://mobbin.com/screens/97fc81b7-4fed-46d0-a019-aa70a9a3ee02), [GitHub "My Work"](https://mobbin.com/screens/efbede59-74fe-4394-9d0d-5d38ef3d9d49) and [Zopa Bank "Manage"](https://mobbin.com/screens/bc45452b-cfa1-4080-992e-2b4862f9fa20) all use one grouped list with an icon, a title and a chevron. The user picked this.
+
+### D-113: On a finished trip, the card is "Members & Drop-off" and rows show just the place
+- **Date:** 2026-11-08
+- **Area:** Copy / UI
+- **Status:** Active (narrows D-111 for finished trips)
+- **Decision:** On a sent or reviewed trip (Review this trip, and the read-only trip view), the members card is titled "Members & Drop-off". Each row shows the name, then only the place ("14 Birch Ave, Kitchener"), in regular weight grey, with no "Drop-off:" label. Planned trips on the driver home keep "Drop-off: [place]".
+- **Problem / context:** Repeating "Drop-off:" on every row added noise once the card title could say it once. The medium-weight address felt heavy.
+- **Tradeoffs:** Without the label, the rows rely on the card title and the house/office icon to say what the address means.
+- **Impact / where in code:** `dropRow(member, bare)` and `membersCard()` in data.js.
+- **Evidence:** User request.
+
+### D-114: Record card spacing: closer groups, more room under the card heading
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** In cards split into groups (The record: Times, Kilometres, Pay, Fuel), the gap between groups drops from 40px to 24px, plus the last row's own padding. The gap between the card heading and the first group grows from 16px to 24px.
+- **Problem / context:** The groups were pushed too far apart while "Times" sat too close to "The record", so the heading didn't read as covering everything below it.
+- **Tradeoffs:** None worth noting. The card is shorter.
+- **Impact / where in code:** components.css (`.group + .group`, `.card > h2 + .group`).
+- **Evidence:** User feedback on Review this trip.
+
+### D-115: Staff "check" the trip sheet, instead of "reviewing" the trip
+- **Date:** 2026-11-08
+- **Area:** Copy
+- **Status:** Active
+- **Decision:** Staff wording changes from "review" to "check": the staff home heading "Waiting for review" → "Submitted trip sheet" ("Submitted trip sheets" when there is more than one; briefly "Trip sheets to check", changed so the heading and the button below it don't repeat the same words); the button and page title "Review this trip" → "Check trip sheet"; the final button "Mark reviewed" → "Mark as checked"; status "Waiting for review" → "Waiting to be checked"; "Reviewed" / "Reviewed by Ed" → "Checked" / "Checked by Ed"; the confirmation "… is reviewed" → "… is checked". The banner reads "Check the numbers, then mark the trip sheet as checked." The data value stays `reviewed` internally.
+- **Problem / context:** "Review this trip" could be read as rating the trip. What staff actually do is check the numbers the driver sent and sign off, which is the paper trip sheet's job.
+- **Tradeoffs:** The verb "check" now appears in both the instruction and the button, which is a little repetitive but unambiguous.
+- **Impact / where in code:** User-facing strings in data.js (`statusLabel`, `statusFact`, the staff home lead card, `renderSheet` review mode, the checked notice).
+- **Evidence:** User feedback.
+
+### D-116: Row labels in grouped cards are grey
+- **Date:** 2026-11-08
+- **Area:** Visual design
+- **Status:** Active
+- **Decision:** In grouped cards like The record, the row labels (Start, End, Hours, Beginning, Ending, Total, Rate, Pay, Litres, Cost) use the soft ink grey `#3D5356` (8:1 on white, well above the 4.5:1 minimum). Values stay dark and bold, and group headings (Times, Kilometres…) stay dark.
+- **Problem / context:** Labels and values were the same dark colour, so the eye couldn't jump straight to the numbers.
+- **Tradeoffs:** None for readability. The grey is the same one used for drop-off lines and notes.
+- **Impact / where in code:** components.css (`.group .list-row > :first-child`).
+- **Evidence:** User request.
+
+### D-117: Past trips use the grouped-row style; Bus totals outline matches other cards
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active (updates D-087 and D-089's row layout; D-109's outer border)
+- **Decision:** "Past trips" (staff) and "Your past trips" (driver) render as one grouped list like Manage. Each row has a teal calendar-check icon in a soft circle, the bold trip name, one grey line joined by "·" ("Friday, November 6 · Priya Sandhu" for staff, "Yesterday · Checked" for drivers), and a chevron. The "Driver:" prefix is dropped. The Bus totals grid's outer border goes from 1px to 2px to match every other card. Its inner dividers stay 1px.
+- **Problem / context:** Past trip rows had two grey lines of equal weight under the title, so the hierarchy was flat. The totals grid's thinner outline didn't match the cards around it.
+- **Tradeoffs:** On a 375px phone the one-line summary can wrap. Without "Driver:", the name relies on context, the same way Uber and Lyft show it.
+- **Impact / where in code:** `pastTripsCard()` in data.js (now builds with `manageList` / `manageRow`, new `MANAGE_ICONS.trip`), components.css (`.tiles` border).
+- **Evidence:** Mobbin: [Uber "Activity"](https://mobbin.com/screens/60fd7d5b-f39e-4878-9207-d939553a21d0) (bold title, one "·" detail line), [Bolt](https://mobbin.com/screens/5386b792-3c94-4d12-b1d8-17aac1675b21) and [Lyft ride history](https://mobbin.com/screens/70a9c4d6-8e37-4b3f-833d-5cda1105c610) (icon chip, title, short grey line).
+
+### D-118: "Pending approval" + "Open"; 1.5px outlines; short dates in lists
+- **Date:** 2026-11-08
+- **Area:** Copy / Visual design
+- **Status:** Active (updates D-115's heading and button; D-109 and D-117's borders)
+- **Decision:** (1) The staff home heading reads "Pending approval", the same for one trip or several (earlier tries: "Trip sheet to review", then "Trip pending" / "Trips pending"). With only two staff, pending can only mean waiting on the office. And the button in that card reads "Open". The page itself keeps the title "Check trip sheet" and "Mark as checked". (2) Every outline (cards, inputs, buttons, grouped lists, the Bus totals grid inside and out) is 1.5px instead of 2px. Row dividers inside lists stay 1px. (3) List rows show short dates: "Nov 6", or "Today" / "Yesterday" / "Tomorrow" when close. Trip details keep the full date.
+- **Problem / context:** "Submitted trip sheet" above "Check trip sheet" still felt like two labels fighting. The heading now names the task and the button just opens it. 2px outlines looked heavy, and the grid's inner lines didn't match its outer border. Long dates made past-trip rows wrap.
+- **Tradeoffs:** "Open" is generic on its own, but the heading right above gives it meaning. 1.5px input borders are still clearly visible (dark ink on white).
+- **Impact / where in code:** data.js (lead heading, lead button, `shortDay()` → `shortDate()`), tokens.css (`--border: 1.5px`), components.css (`.tile` inner borders use `--border`).
+- **Evidence:** User request.
+
+### D-119: Manage rows put the count in the title
+- **Date:** 2026-11-08
+- **Area:** Copy
+- **Status:** Active (updates D-112's summaries)
+- **Decision:** Manage rows read "Members (6)", "Drivers (2)", "Repairs (5)". The summary line drops the repeated count: "3 use a wheelchair", "Priya, Tom", "Latest: Brake inspection". An empty list shows "(0)" with "No … yet. Add the first one".
+- **Problem / context:** "Members" over "6 members" said the same word twice.
+- **Tradeoffs:** None worth noting. Summaries are shorter, so fewer wrap on a phone.
+- **Impact / where in code:** The Manage block at the end of the staff home render in data.js.
+- **Evidence:** User request.
+
+### D-120: The record card is titled "Details"
+- **Date:** 2026-11-08
+- **Area:** Copy
+- **Status:** Active
+- **Decision:** On a trip's own screen, the card with Times, Kilometres, Pay and Fuel is titled "Details" instead of "The record".
+- **Problem / context:** "The record" was an odd phrase. "Details" is the plain word people expect for that section.
+- **Tradeoffs:** "Details" is generic, but the group headings inside it say what each part covers.
+- **Impact / where in code:** `recordCard()` in data.js.
+- **Evidence:** User request.
+
+### D-121: Staff create trips from "+ New trip" on the staff home
+- **Date:** 2026-11-08
+- **Area:** UX flow
+- **Status:** Active
+- **Decision:** A full-width secondary button, "+ New trip", sits directly under the Trips title on the staff home. It creates a blank draft trip and opens "Set up this trip". The form's first card, now "Name, date, pickup and driver", starts with a required "Trip name" field ("What the office and driver call it, like Blue Jays game."). An empty name shows "Enter a name for the trip, like Blue Jays game." Sending works as before ("Send to Priya"), and the trip appears on that driver's home. An unsent draft shows in Open trips as "New trip · Draft" until it's named.
+- **Problem / context:** There was no way to create a trip. The prototype only had two built-in sample trips that staff could set up.
+- **Tradeoffs:** The button is secondary, so "Open" on a pending trip stays the screen's one main action. Opening "+ New trip" and leaving without saving leaves a draft behind, which staff can open and finish later. There's no delete yet.
+- **Alternatives considered:** A bare "+" in the top corner (unclear to older users, and Ed's name menu is there), a floating round "+" (hidden meaning, covers content), a link at the bottom of the page (buried), a row in Manage (Manage is for reference lists).
+- **Impact / where in code:** data.js: `KEYS.trips`, `createdTrips()`, `tripSources()`, `newTrip()`, `cloneTrip` / `allTrips` / `saveTrip` (trip name is now saved), the staff home button, the `setupForm` name field and its validation, and "Reset sample trips" also clears created trips.
+- **Evidence:** User question ("how does admin even create a trip?") and choice of placement.
+
+### D-122: "Set up this trip" is regrouped into five calm sections
+- **Date:** 2026-11-08
+- **Area:** UI / Copy
+- **Status:** Active (updates D-121's first card; replaces the "How is … paid" card)
+- **Decision:** The form reads top to bottom as: **Trip** (name, date, pickup time, plus one hint "Members get this time when they confirm by phone."), **Driver and pay** (driver choice, then Volunteer / Paid and the hourly rate), **Where to** (destination and stops, one hint "Add up to 3 stops before or after, like lunch before a movie."), **Who is coming** (the same Wheelchairs / Seats tiles as the driver home, updating live as members are ticked, then the checklist), and **Drop-off** ("Everyone gets off at the office. Tap a name to drop them somewhere else." and "On the day, Tom can change it."). The intro banner is shorter: "Fill in each part, then send it to Tom. You can change it until the trip starts." A brand-new draft no longer shows the "New trip / Status: Draft" box. A trip that's already been sent still shows it, with "Save changes".
+- **Problem / context:** Nearly every card had one to three grey hints, so the fields got lost. Card titles were long or worded as questions. Driver and pay were split up even though they're one decision, and the space counts used a different style from the rest of the app.
+- **Tradeoffs:** Fewer hints, so the wording that's left has to carry the meaning. The "add a driver or change a PIN" pointer is gone, since Drivers is in Manage on the staff home.
+- **Impact / where in code:** `setupForm()` (card structure, live `spaceTiles`, copy), `routeEditor()` hint, `renderSheet()` hides the head box for a new draft.
+- **Evidence:** Mobbin: [WhatsApp "Create event"](https://mobbin.com/screens/c7df3b97-12ee-425c-ba4d-26f949d70d1d) and [Nextdoor "New event"](https://mobbin.com/screens/34c4294a-d515-4248-bedb-0f5450e985c9) order name → when → where → who, in small groups with almost no help text. Tested end to end: created, filled in and sent a trip, then reopened it to edit.
+
+### D-123: Staff names are Edward Faruzel and Robert Wismer
+- **Date:** 2026-11-08
+- **Area:** Copy / Data
+- **Status:** Active
+- **Decision:** The two staff sample users are "Edward Faruzel" and "Robert Wismer" everywhere: sign-in, the name menu ("Edward ▾"), "Checked by …" lines, PRODUCT.md, the bus-service rules file and this log. Their ids stay `ed` and `rob`, so saved data and preview links still work.
+- **Problem / context:** The earlier spellings ("Ed Crusoe", "Rob Wiseman") were wrong.
+- **Tradeoffs:** None.
+- **Impact / where in code:** `STAFF` in data.js; PRODUCT.md; .cursor/rules/bus-service.mdc; DESIGN_DECISIONS.md.
+- **Evidence:** User correction.
+
+### D-124: "Set up this trip": status pill, softer fields, one route list, drop-off inside "Who is coming"
+- **Date:** 2026-11-08
+- **Area:** UI / UX flow
+- **Status:** Active (updates D-122 and D-056's stop buttons; removes the Drop-off card)
+- **Decision:**
+  - **Status pill.** "Draft" or "Sent to Priya" is a small grey pill on the title's line, at the right. It wraps under a long title. The trip-head box (name + Status) is gone from this screen, because the name is the first field. A sent trip's intro reads "Priya already has this trip. Change anything until the trip starts, then save."
+  - **Fields.** Input outlines are a soft grey-teal (`--line-field` #7a8d90, 3.5:1 on white, which passes WCAG 1.4.11) instead of near-black, and turn teal on focus. This applies across the app. Form cards space fields and groups 24px apart (was 16px). A hint under a field stays 8px from it.
+  - **Where to.** One ordered list in the order the bus visits: the Destination plus up to 3 Stops. One "+ Add a stop" button adds a stop after the destination. Each row has a ⠿ grip on the left (drag it, or focus it and use the up/down arrow keys, which screen readers announce) and × on the right to remove a stop. The grips appear only once there's a stop. Saving splits the list at the destination into before and after, so the data model is unchanged.
+  - **Drop-off.** The separate Drop-off card is gone. A ticked member shows "Drop-off: **Office** ›" under their name. Tapping it opens the same Office / Home / Usual spot / Another address picker in place, headed "Drop-off". One note under the list: "Drop-off is the office unless you change it. On the day, Priya can change it too." "Reason (optional)" appears below it only when someone is going home.
+  - **Who is coming.** The hint and the Wheelchairs / Seats tiles sit together. The checklist runs to the card's inner edge. A ticked row's tint covers the name and its drop-off line, with one thin rule between members.
+- **Problem / context:** User audit. The Draft box added no information. Fields felt cramped and too heavy. Separate "Add a stop before / after" buttons made people think about position before they had a stop. The Drop-off card was mostly text, and when nobody was ticked it said "Tick who is coming first", which pointed back to the previous card. Spacing in "Who is coming" had no clear order.
+- **Tradeoffs:** Dragging is hard for some older users and for keyboard users. Arrow keys on the grip cover keyboards and screen readers, but a touch-only user who can't drag has no up/down buttons. A new stop always lands after the destination, so a stop before it takes one drag. The pill is lighter than the old box. That's fine because staff act on the form, not the status.
+- **Alternatives considered:** Up/down arrow buttons on every row (cluttered for the usual 0–1 stops). Keeping a Drop-off card with per-member rows (repeats the member list). A dropdown per member (hides the address options).
+- **Impact / where in code:** data.js: `topbar(title, pill)`, `renderSheet()` (preset has no box), `routeEditor()` rewritten, `dropPicker(member, onChange, compact)`, `setupForm()` (member rows carry drop slots, Drop-off card removed, sent-trip banner). components.css: `.topbar-row`, `.pill`, form card gap, `.route-*`, `.member-pick*`, `.drop-link`, field focus. tokens.css: `--line-field`.
+- **Evidence:** Mobbin. [Alta destinations](https://mobbin.com/screens/e4483fff-e94a-499f-ad9e-02ffaa169f78) and [Polarsteps trip plan](https://mobbin.com/screens/50bab878-4a25-43aa-9243-a4090402744a) show places in one ordered column, each with its own delete control and a single "+ Add" below. [Klarna "Reorder your wallet"](https://mobbin.com/screens/7ae12155-b536-49a8-822e-1a263e548f29) and [Luma "Reorder ticket types"](https://mobbin.com/screens/cdb57153-00a2-4cb4-a717-4acaaef4a533) use a grip on each row for drag-to-reorder. The status pill is the user's own idea; Mobbin had no close match. Tested at 375px: added two stops, reordered them by keyboard and by drag, ticked members, set one member to Home, sent to Priya, and reopened it. Order, drop-offs, the "Sent to Priya" pill and "Save changes" all came back correctly. No console errors, no sideways scroll.
+
+### D-125: "Set up this trip" polish: status tag, lighter fields, no rules in choices, tidier Where to, drop-off in a bottom sheet
+- **Date:** 2026-11-08
+- **Area:** UI / UX flow
+- **Status:** Active (updates D-124)
+- **Decision:**
+  - **Status tag.** The status by the title is now an outlined tag with a small dot: no fill, 6px corners, 15px text. "Sent to Priya" has a filled teal dot; "Draft" has a hollow grey dot. It no longer looks like the round, filled "Edward ▾" menu.
+  - **Fields.** Outlines are 1px (was 1.5px) in `--line-field` #869799 (was #7a8d90). That's 3.0:1, the lightest that still meets WCAG 1.4.11. On focus, a 2px teal outline makes the active box obvious.
+  - **Driver and pay.** No rules between the radio options; options sit 4px apart and the tinted row shows the pick. The same applies to every choice list in a form card and in sheets.
+  - **Where to.** It still starts with one Destination field. Once there's a stop, each row gets a grip column, and the × sits inside the stop's box, so all boxes share one width. Rows are 24px apart. The hint says stops aren't members' homes: "Stops are places the group visits together, like lunch before a movie. Members' homes are not stops. Up to 3." With stops, it reads "Drag ⠿ to put places in the order the bus visits them. Members' homes are not stops."
+  - **Drop-off.** Tapping "Drop-off: Office ›" under a ticked member opens a bottom sheet titled "Drop-off" with the member's name underneath, the choices (Office / Home / Usual spot / Another address with an address field), a close × and a Save button. Nothing changes until Save. ×, Escape or tapping outside leaves it as it was. Focus goes into the sheet, then back to the member's drop-off line. An empty "Another address" keeps the sheet open with the error. On screens 600px and wider, the sheet is a centred card.
+- **Problem / context:** User review of D-124. The grey filled status pill looked like the name menu. Fields still looked heavy. Rules between two radio options added noise. Where to felt hectic once drag handles and × buttons made the boxes uneven widths. "Stops" could be read as member pickups. Opening the drop-off choice inside the member list nested a radio list inside a checklist, so the levels got muddled.
+- **Tradeoffs:** A sheet adds an open-and-save step, but it keeps the checklist flat and one level deep. The 1px outline is close to the minimum; on a dim phone screen the box is fainter, so the focus outline does more work. A pointer-drag test can leave focus in the dragged stop's box.
+- **Alternatives considered:** Keeping the in-place picker but un-indented (still two lists inside each other). A full-screen page per member (too heavy for one choice). A native `<select>` (cuts off long addresses and has no "Another address" field).
+- **Impact / where in code:** data.js: `topbar()` (draft class), `dropPicker()` with `openSheet()` for compact mode, `routeEditor()` (`.route-box`, `has-stops`, hint copy). components.css: `.pill`, field border and focus, choice-list rules, `.route-*` rewrite, `.sheet*`. tokens.css: `--line-field`.
+- **Evidence:** Mobbin. Single-choice bottom sheets with a title, an optional subtitle and a save button: [MacroFactor "Check-In Day"](https://mobbin.com/screens/b8bc51fb-3ed5-4286-b27a-448ebf6bdd3f), [Oportun "Goal frequency"](https://mobbin.com/screens/daf61d24-fc16-4565-a504-3b81b9c3cdc5), [Klarna "Categories"](https://mobbin.com/screens/851d6ea4-9121-4c7a-8e5a-8cd0cfadb6d1). Checklists of people stay flat, with details opened elsewhere: [Trip.com passengers](https://mobbin.com/screens/a701e1dc-006a-42fe-b068-bbe12f2dcaf6), [Luma guest list](https://mobbin.com/screens/9dd54074-60d0-4ca4-8723-fc41ad08b5ef). Tested at 375px: the sheet opens, Cancel reverts, Save updates the row, and an empty address shows its error. No console errors.
+
+### D-126: Text boxes show focus as one 2px teal border
+- **Date:** 2026-11-08
+- **Area:** UI / Accessibility
+- **Status:** Active (fixes D-125's focus style)
+- **Decision:** A focused text box gets a 2px teal border (the 1px border plus a 1px inset shadow) and no outline. Buttons, radios and links keep the global 3px offset outline.
+- **Problem / context:** The global `:focus-visible` outline (3px, set 3px out) stacked on top of D-125's teal border. Inside the drop-off sheet, the scrolling area clipped that outer outline on the sides, leaving a stray teal bar above the Address box.
+- **Tradeoffs:** 2px is thinner than the 3px outline used elsewhere, but it's still the WCAG 2.4.13 minimum and it hugs the box, so it can't be clipped.
+- **Impact / where in code:** components.css, `.field input:focus` / `:focus-visible` rule.
+- **Evidence:** User screenshot of the Address field in the sheet.
+
+### D-127: Status is a grey line under the title; the reason option is "Other"
+- **Date:** 2026-11-08
+- **Area:** UI / Copy
+- **Status:** Active (replaces D-124/D-125's status pill)
+- **Decision:** "Set up this trip" shows "Status: Draft" or "Status: Sent to Priya" as plain grey body text, 4px under the headline. There's no chip or tag. In the drop-off reason list, "Other reason" is now "Other". Picking it still shows "What is the reason?".
+- **Problem / context:** The outlined chip with a dot felt like a generic, templated UI element and still competed with the name menu. "Other reason" repeated the group heading ("Reason").
+- **Tradeoffs:** A grey line is quieter than a tag. That's fine: staff act on the form, and the status is reference.
+- **Impact / where in code:** data.js `topbar(title, status)`, `reasonPicker()` option label; components.css `.topbar-status` (pill styles removed).
+- **Evidence:** User request.
+
+### D-128: Sign in is one flat, quieter screen
+- **Date:** 2026-11-08
+- **Area:** UI / Copy
+- **Status:** Active
+- **Decision:** Sign in stays on one screen, with less on it:
+  - The banner is gone. A grey line under the title reads "Pick your name and enter your PIN."
+  - The "Team" card is gone. Names are a flat list of rows: a round initial ("PS"), the name in bold with "Driver" or "Staff" in grey underneath, and a check circle at the right that fills teal on the picked person. The picked row is tinted, with no outline. This replaces the role chips and the teal box that looked like keyboard focus.
+  - The PIN label names the picked person ("PIN for Tom"). The PIN shows as large spaced dots. A grey hint under the box reads "Forgot your PIN? Ask the office."
+  - The logo has 24px above it so it isn't cut off at the top.
+- **Problem / context:** The screen had a banner, a boxed card, chips and an outlined selection all competing. The selected row looked like a focus ring, and nothing tied the PIN box to the chosen name.
+- **Tradeoffs:** The rows are still buttons with `aria-pressed` rather than radios. Screen readers hear "Priya Sandhu Driver, toggle button, pressed", which is clear enough for four people.
+- **Alternatives considered:** A two-step flow (name, then a PIN screen), which the user declined in favour of one screen. Four separate PIN boxes, which are fiddly for low-vision users and break pasting.
+- **Impact / where in code:** data.js `renderSignIn()`, `topbar(title, sub)` (now takes any subtitle; the trip page passes "Status: …"); components.css `.person-*`, `.pin-block`, `#pin`, `.brand` padding.
+- **Evidence:** Mobbin account pickers with a round initial, a bold name and a grey detail line: [Google "Choose an account"](https://mobbin.com/screens/fd0738d1-482b-49a6-91dd-c582f97d2df3), [X "Log in"](https://mobbin.com/screens/d11ef17f-75d3-4d6f-837f-4dc85ce53f52), [Temu](https://mobbin.com/screens/586d9d07-4548-4f31-8b20-96b884556ba9). Tested at 375px: picking a name updates the label and the check, and a wrong PIN shows its error.
+
+### D-129: "Name" label, place suggestions for Where to, and Back on every inner page
+- **Date:** 2026-11-08
+- **Area:** UI / UX flow / Copy
+- **Status:** Active
+- **Decision:**
+  - In "Set up this trip", "Trip name" is now "Name". It sits under the "Trip" heading, so "Trip" was repeated.
+  - Destination and each stop suggest places as staff type (after 2 letters). Places the office has used before come first, marked "Used before". Then come named places in Canada from the same Photon lookup as addresses, ranked nearest to Kitchener–Waterloo. Each shows the place name over its street and city. Picking one fills in "Rogers Centre, Toronto". Anything typed is still accepted, and a place search never shows "no match".
+  - Every inner page has a Back link: read-only trip pages (a driver's past trip, a checked trip), the "That trip is not on the list" page and the Screen list. Trip pages go back to the home screen, and driver steps go back to the previous step, as before. The two home screens and Sign in have none, because they're where everything starts. Sign out is in the name menu.
+  - The suggestion list outline matches the lighter 1px field outline.
+- **Problem / context:** User request. Destinations were free text with no help, and read-only trip screens had no way back except the browser button.
+- **Tradeoffs:** Photon sometimes returns loose matches (typing "Rogers Cen" also lists Rogers stores). The office's own past places are listed first to make up for it. Typing a place name sends it to Photon (komoot), as address search already does.
+- **Impact / where in code:** data.js: `placeMatches()`, `photonPlaces()`, `addressField(id, label, value, "place")` with `searchPlaces()`, `routeEditor()` uses place fields, `setupForm()` label, `renderSheet()` back link for every mode and on the not-found page, `renderPreview()` back link. components.css: `.suggest` border, destination label selector.
+- **Evidence:** Tested at 375px: "Rogers Cen" suggests "Rogers Centre (Used before)" and "Rogers Centre, 1 Blue Jays Way, Toronto". Back is present on Repairs, Members, Drivers, Screen list, trip-not-found, read-only trip and setup pages, and absent only on the homes and Sign in.
+
+### D-130: "Export trips" in the name menu, as PDF or Excel, with a choice of what to include
+- **Date:** 2026-11-08
+- **Area:** UX flow / Data
+- **Status:** Active
+- **Decision:** The name menu ("Edward ▾", "Priya ▾") has "Export trips" above Sign out. It opens a bottom sheet titled "Export trips":
+  - **Format:** PDF or Excel (.xlsx). The button reads "Download PDF" or "Download Excel".
+  - **Which trips:** This month (default), Last month or All trips.
+  - **Include:** checkboxes with a one-line description each. Trip details (destination, stops, driver, pickup, status) is on by default. Members (who came, boarded, drop-off) is off. Kilometres and hours (odometer readings, start and end times) is on. Pay (volunteer or paid, rate, pay) is on. Fuel (litres, cost) is off. Repairs (cost, by date) is staff only and off by default. Date and trip name are always included. If nothing is ticked, the sheet shows "Choose at least one thing to include."
+  - **Who sees what:** staff export every trip; a driver exports only their own, with no Driver column and no Repairs. Unsent drafts are left out.
+  - **Files:** Excel has one sheet per part (Trips, Members, Repairs), with numbers kept as numbers so they add up. The PDF is titled "AccessBus trips" with "KW AccessAbility · period · Exported by … on …", has a teal-headed table per part and shows money as "$22.50". Columns on a wide trips table don't wrap mid-word; extra columns continue on the next page with Date and Trip repeated. Files are named `accessbus-trips-2026-11-08.pdf`, or `accessbus-priya-trips-…` for a driver.
+- **Problem / context:** Staff report to funders and need the trip sheets outside the app. Drivers may want a record of their own hours and pay.
+- **Tradeoffs:** The PDF and Excel libraries (jsPDF 2.5.1 + AutoTable 3.8.2, SheetJS 0.18.5) load from jsDelivr on first export, so exporting needs the internet; offline, the sheet says so. Dates are shown as 2026-11-06 so they sort correctly in Excel. The period is by calendar month only; there's no custom date range yet.
+- **Alternatives considered:** A Reports page (more screens for a once-a-month task). Fixed PDF and Excel buttons with no choices (funders ask for different things). CSV (staff asked for PDF and Excel).
+- **Impact / where in code:** data.js: `profileMenu()` button, `modalSheet()` (a reusable bottom sheet), `openExport()`, `exportTables()`, `xlsxBlob()`, `pdfBlob()`, `buildExport()`, `saveBlob()`, `loadExportLib()`.
+- **Evidence:** User request. Tested by building both files in the browser without downloading. Excel had sheets Trips, Members and Repairs, with an 18-column header. The PDF was valid (%PDF-1.3) and readable, with money formatted and wide tables continuing over pages. A driver's export held only Priya's trips, with no Driver column.
+
+### D-131: A remembered place shows once in suggestions
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active (updates D-129)
+- **Decision:** The "Used before" label is gone. If a place the office has used before is also found by the lookup, it shows once, as the lookup's row (it has the street and city), at the top. Remembered places the lookup doesn't find still show, plain, before other results.
+- **Problem / context:** "Rogers Centre (Used before)" appeared right above "Rogers Centre, 1 Blue Jays Way, Toronto", the same place twice.
+- **Tradeoffs:** Staff no longer see which places they've used before; listing them first is the only hint.
+- **Impact / where in code:** data.js `placeMatches()`, `searchPlaces()`.
+- **Evidence:** User request.
+
+### D-132: Staff can delete a trip until it starts, with Undo; Sign out is a text link
+- **Date:** 2026-11-08
+- **Area:** UX flow / UI
+- **Status:** Active (answers the open question "Should staff be able to delete a draft or cancel a trip?")
+- **Decision:**
+  - **Delete:** "Set up this trip" ends with a red, underlined "Delete trip" text button under the main button. It opens a bottom sheet: "Delete Blue Jays game?", "It disappears from Priya's screen too. You can undo this right after, on the Trips screen.", a red "Delete trip" button and an underlined "Keep the trip" link. Deleting goes to Trips, which shows "Blue Jays game is deleted" with Undo; an unnamed draft shows "New trip is deleted". Deleting hides the trip, and its saved data stays, so Undo restores it exactly. "Reset sample trips" clears deletions too.
+  - **Only before the trip starts.** Once a driver starts a trip, it opens read-only and has no Delete, because started, submitted and checked trips are records for funders and bus totals.
+  - **Name menu:** Export trips stays a soft secondary button. Sign out is now plain dark-grey underlined text, left-aligned under it.
+  - **New `.text-link` style:** dark grey, underlined, 48px tap height, no box. It's used for Sign out, sheet cancels and (in red) Delete trip. `.btn-danger` turns a main button red for destructive confirms.
+- **Problem / context:** There was no way to remove a mistaken or cancelled trip. In the name menu, Export and Sign out looked equally important, and Sign out is the rarer, more final choice.
+- **Tradeoffs:** Undo is offered once, on the next Trips screen. After that the trip stays hidden, though its data remains in storage in the prototype. A driver isn't told their trip was deleted; it just leaves their home screen. Whether drivers should be told about changes is still open (D-059).
+- **Alternatives considered:** "Cancel trip", keeping a cancelled trip visible (adds a status nobody asked for yet). Deleting from the trip row on the home screen (too easy to hit by mistake). An inline confirm like Remove driver (the sheet matches the newer Export and Drop-off pattern).
+- **Impact / where in code:** data.js: `KEYS.deleted`, `deletedTrips()`, `deleteTrip()`, `restoreTrip()`, `tripSources()` filter, `deletedNotice()` in `reviewNotice()`, `deleteControl()` in `setupForm()`, `modalSheet(…, cancelText)`, `profileMenu()` Sign out class, preview reset. components.css: `.text-link`, `.text-danger`, `.btn-danger`, `.sheet-cancel`, `.profile-panel .text-link`.
+- **Evidence:** User request. Tested at 375px: the confirm sheet shows, Delete goes to Trips with the "… is deleted" banner and removes the trip from the list, and Undo brings it back. Started trips open read-only, with no Delete.
+
+### D-133: A closed "Correct a number" card has equal space above and below its heading
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active (fixes a side effect of D-124)
+- **Decision:** The 24px gap between parts of a form card no longer applies to collapsible cards (`<details>`). Closed, "Correct a number" has 24px of padding above and below its heading. Opened, its body still starts 24px under the heading.
+- **Problem / context:** D-124's form-card gap also hit the collapsible card. The browser keeps a slot for the hidden content, so the closed card had an extra 24px under the heading.
+- **Tradeoffs:** None.
+- **Impact / where in code:** components.css: `.screen > form > .card:not(details)`.
+- **Evidence:** User screenshot. Measured at 375px: 26px above and 26px below the heading (it was 26 and 50).
+
+### D-134: One main-button size on staff screens, darker trip labels, tighter sheet heading, no delete banner
+- **Date:** 2026-11-08
+- **Area:** UI / UX flow
+- **Status:** Active (updates D-107 label colour and D-132's Undo)
+- **Decision:**
+  - **Main button size:** on staff screens, the form's main button ("Send to Priya", "Save changes", "Mark as checked") is inset by the card padding (25.5px each side), so it's exactly as wide as "Open" inside the Pending approval card: 276px at 375px wide, 48px tall.
+  - **Trip detail labels** (Date, Status, Driver, Drop-off…) use a new `--label` colour, #0e4a4f, one step darker than the #155e63 headings (9.9:1 on white).
+  - **Sheet heading:** the 48px × button no longer makes the heading row taller than the title (negative bottom margin), so the text starts 24px under the title, not about 40px.
+  - **Delete:** the "… is deleted" banner and its Undo are gone. The confirm sheet now reads "It disappears from Priya's screen too. This can't be undone." The trip is hidden from every list. In the prototype its data stays in storage, and "Reset sample trips" clears deletions.
+  - **Cache:** bumped `style.css?v=18`, `tokens.css?v=20`, `components.css?v=39` and `data.js?v=45`, so browsers load the new files.
+- **Problem / context:** User review. Form buttons were full width (327px) while Open was inset, so the same action looked bigger in one place. Labels read too light. The sheet had a gap under its title. The post-delete banner felt odd.
+- **Tradeoffs:** With no Undo, the red confirm sheet is the only safety net for delete. The inset button no longer lines up with the card edges above it, but it matches the Open button.
+- **Impact / where in code:** components.css: `.screen[data-role="staff"] > form > .btn-primary`, `.fact dt`, `.sheet-close` margin. tokens.css: `--label`. data.js: `deleteTrip()` (no notice), removed `restoreTrip()` and `deletedNotice()`, `deleteControl()` copy. HTML and style.css version numbers.
+- **Evidence:** Measured at 375px: Send to the driver, Mark as checked and Open are all 276px wide; the label colour is rgb(14, 74, 79); the sheet heading row is 29px, the same as the title.
+
+### D-135: Trip detail labels go back to clearly cyan (#12595e)
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active (corrects D-134's label colour)
+- **Decision:** `--label` is #12595e, a touch deeper than the #155e63 headings and clearly cyan (8.0:1 on white). D-134's #0e4a4f read as black. Labels fall back to the heading colour if `--label` is missing, so they never turn ink-black. Applies on the Pending approval card and on every trip page. Bumped `style.css?v=19`, `tokens.css?v=21`, `components.css?v=40`.
+- **Problem / context:** User: the labels looked black, not cyan.
+- **Tradeoffs:** Only slightly darker than the headings, so labels and headings read as the same colour family.
+- **Impact / where in code:** tokens.css `--label`; components.css `.fact dt`; style.css and HTML version numbers.
+- **Evidence:** Computed rgb(18, 89, 94) on the Pending approval card and on the Blue Jays trip page at 375px.
+
+### D-136: The trip name heading a trip's details is black
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active
+- **Decision:** On "Check trip sheet" and every trip screen, the trip name at the top of the details box ("St. Jacobs Farmers Market") is ink (#14272a), not teal. That matches the trip name on the Pending approval card. Section headings stay teal and the labels under the name stay cyan. Bumped `style.css?v=20`, `components.css?v=41`.
+- **Problem / context:** User request. A teal name plus teal labels made the top of the box one colour, so the trip itself didn't stand out.
+- **Tradeoffs:** None.
+- **Impact / where in code:** components.css `.trip-head > h2`.
+- **Evidence:** Computed rgb(20, 39, 42) at 375px on Check trip sheet.
+
+### D-137: Staff main buttons are full width and 56px tall
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active (reverses D-134's inset button)
+- **Decision:** Form buttons on staff screens ("Mark as checked", "Send to Priya", "Save changes") are full width again, lined up with the cards above. Every main button on staff screens, Open on the Pending approval card included, is 56px tall (it was 48). D-134 had inset the form buttons to match Open's width, which broke the page's alignment. Bumped `style.css?v=21`, `components.css?v=42`.
+- **Problem / context:** User: the inset button didn't line up with anything else on the page, and should be a bit taller.
+- **Tradeoffs:** Open is still narrower than form buttons because it sits inside a card. Size now means height, not width.
+- **Impact / where in code:** components.css `.screen[data-role="staff"] .btn-primary` (min-height 56px); the inset rule removed.
+- **Evidence:** Measured at 375px: Mark as checked runs 24–351px, the same as the card above, and is 56px tall; Open is 56px tall.
+
+### D-138: Five-flow audit: tappable lists line up with their labels; live figures put the label first
+- **Date:** 2026-11-08
+- **Area:** UI
+- **Status:** Active
+- **Decision:** I walked through five flows at 375px: sign in; staff create and send a trip; driver runs it (lot, pickup, finish, fuel); staff check and mark it checked; Members, Drivers, Repairs and Export. Fixes:
+  - **Tappable lists line up with their labels.** Radios (Driver, Pay, wheelchair Yes/No, drop-off choices), Sign in toggles and Drop-offs rows sat 16px inside the headings and field labels above them (8px in sheets), because each row has inner padding for its tint. Those lists now bleed by that padding, so the radio, box or name starts on the same line as the labels; the tint and rules reach into the card's padding. The in-place drop-off editor adds the padding back so its own radios line up too. This matches the Who is coming checklist (D-124).
+  - **Revealed fields get air:** the hourly rate field under "Paid" sits 16px below the options (was 8px).
+  - **Live figures** on "Finish this trip" use the same label-on-top layout as the finished-trip summary and the bus totals (D-098): "Kilometres" over "120 km", "Hours" over "9.62 h", "Pay at $21.50 an hour" over "$206.83". The values used to come before their captions.
+  - Bumped `style.css?v=23`, `components.css?v=44`, `data.js?v=46`.
+- **What was already right:** every inner page has Back; each screen has exactly one main button; there's no sideways scrolling or overflow on any screen; staff main buttons are 56px and driver buttons 64px; blocks line up with the 24px page edges; no console errors.
+- **Noted, not changed:** the staff home shows no confirmation after "Send to Tom" (the trip just appears under Open trips). The "✓ … is checked" banner with Undo still shows after Mark as checked; it's the same kind of message as the delete banner removed in D-134. The Sign in button is 48px because the 56px staff size applies only once signed in. Location is hidden on a trip card when it equals the trip name (by design).
+- **Impact / where in code:** components.css: list bleed rules for `.card` and `.sheet`, `.spot-edit` padding, `.group > ul + .field`. data.js: `liveFigures()` uses `metric()`.
+- **Evidence:** Measured after the fix: radios, checkboxes and row names start at the same x as their headings on Set up this trip (50px), Members (50px), the export sheet (24px), Member pickup (50px) and Finish this trip, including the open drop-off editor (50px). The audit's test trips were removed afterwards.
+
 ## Open questions
+- 2026-11-08: Which columns and periods do funders actually want in an export (D-130)? Is a custom date range needed? Ask Rob and Edward.
 - 2026-11-07: Release 2: record times at each stop and member drop-off (driver taps, or GPS). See D-084.
 - 2026-11-07: Did the office write the destination and times on the old paper sheet, or did the driver fill everything? This decides whether D-016's default should flip.
 - 2026-11-07: Who decides a second destination: the office, or the driver on the day?

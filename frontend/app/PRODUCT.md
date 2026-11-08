@@ -9,7 +9,7 @@ web
 ## Users
 
 - **Drivers (primary):** Part-time paid drivers of KW AccessAbility's single accessible bus, including a new team member with no background. They run occasional out-of-town trips and log each one: readings at the lot, pickup at the office, the trip, fuel, and end-of-trip drop-offs. They may drive the bus rarely, so every run can feel like the first.
-- **Staff:** Ed Crusoe (executive director) and Rob Wiseman. They set up trips (date, driver, volunteer or paid, hourly rate, confirmed members, destination and up to 3 stops), send them to the driver, review completed trip sheets, correct numbers, log repairs, and report bus costs. Staff are older adults.
+- **Staff:** Edward Faruzel (executive director) and Robert Wismer. They set up trips (date, driver, volunteer or paid, hourly rate, confirmed members, destination and up to 3 stops), send them to the driver, review completed trip sheets, correct numbers, log repairs, and report bus costs. Staff are older adults.
 - **Members (not users):** Members phone in to register and never use the app. Most have vision loss. Some use wheelchairs. They appear in the app as records only.
 
 ## Product Purpose
