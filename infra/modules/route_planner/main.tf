@@ -48,7 +48,7 @@ resource "aws_iam_role_policy" "geo_routes" {
           "geo-routes:CalculateRoutes"
         ]
 
-        Resource = "arn:aws:geo-routes:ca-central-1::provider/default"
+        Resource = "arn:aws:geo-routes:us-east-2::provider/default"
       },
       {
         Effect = "Allow"
@@ -57,7 +57,7 @@ resource "aws_iam_role_policy" "geo_routes" {
           "geo-places:Geocode"
         ]
 
-        Resource = "arn:aws:geo-places:ca-central-1::provider/default"
+        Resource = "arn:aws:geo-places:us-east-2::provider/default"
       }
     ]
   })

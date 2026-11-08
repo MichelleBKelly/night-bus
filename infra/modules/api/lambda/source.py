@@ -441,6 +441,16 @@ def _save_driver(body):
 def lambda_handler(event, context):
     http = event.get("requestContext", {}).get("http", {})
     method = http.get("method", "")
+    if method == "OPTIONS":
+        return {
+            "statusCode": 204,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "DELETE,GET,OPTIONS,PATCH,POST",
+                "Access-Control-Allow-Headers": "authorization,content-type",
+            },
+            "body": "",
+        }
     path = http.get("path", "/")
     query = event.get("queryStringParameters") or {}
     claims = event.get("requestContext", {}).get("authorizer", {}).get("jwt", {}).get("claims")
