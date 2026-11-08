@@ -48,7 +48,7 @@ resource "aws_iam_role_policy" "geo_routes" {
           "geo-routes:CalculateRoutes"
         ]
 
-        Resource = "arn:aws:geo-routes:us-east-2::provider/default"
+        Resource = "arn:aws:geo-routes:ca-central-1::provider/default"
       },
       {
         Effect = "Allow"
@@ -57,7 +57,7 @@ resource "aws_iam_role_policy" "geo_routes" {
           "geo-places:Geocode"
         ]
 
-        Resource = "arn:aws:geo-places:us-east-2::provider/default"
+        Resource = "arn:aws:geo-places:ca-central-1::provider/default"
       }
     ]
   })
@@ -80,4 +80,28 @@ resource "aws_lambda_function" "route_planner" {
     aws_iam_role_policy_attachment.logs,
     aws_iam_role_policy.geo_routes
   ]
+}
+
+# --- API Gateway wiring: POST /calculate-route on the shared HTTP API ---
+resource "aws_apigatewayv2_integration" "route_planner" {
+  api_id                 = var.api_id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.route_planner.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "calculate_route" {
+  api_id             = var.api_id
+  route_key          = "POST /calculate-route"
+  target             = "integrations/${aws_apigatewayv2_integration.route_planner.id}"
+  authorization_type = "JWT"
+  authorizer_id      = var.authorizer_id
+}
+
+resource "aws_lambda_permission" "allow_apigw" {
+  statement_id  = "AllowAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.route_planner.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${var.api_execution_arn}/*/*"
 }
