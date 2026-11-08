@@ -14,7 +14,7 @@ from botocore.exceptions import ClientError
 # Trips, members and drivers use the same shapes as frontend/app/data.js,
 # which is the source of truth. Like data.js, readings and money are strings:
 # kilometres are whole-number strings ("120210") and money is dollar strings
-# ("20", "98.40"). Pay is worked out from the trip's payType and rate.
+# ("20", "98.40"). Like data.js, pay isn't stored: it comes from hours, payType and rate.
 #
 # The tables keep their original keys (tripId, memberId, driverId).
 # The frontend calls every key "id", so we rename it on the way in and out.
@@ -164,25 +164,6 @@ def _js_round(value):
 def _js_number(value):
     # String(8.0) is "8" in JavaScript, String(7.5) is "7.5"
     return str(int(value)) if value == int(value) else str(value)
-
-
-def _rate_of(trip):
-    # data.js rateOf: volunteer is 0, paid uses the trip's rate
-    if trip["payType"] == "volunteer":
-        return 0
-    if trip["payType"] != "paid":
-        return None
-    parsed = _amount(trip["rate"])
-    return None if parsed["empty"] or parsed["bad"] else parsed["value"]
-
-
-def _pay_for(trip):
-    # data.js payFor: hours x rate, in dollars, rounded to cents. None if unknown.
-    hours = _amount(trip["hours"])
-    rate = _rate_of(trip)
-    if hours["empty"] or hours["bad"] or rate is None:
-        return None
-    return _js_round(hours["value"] * rate * 100) / 100
 
 
 def _today():
@@ -357,12 +338,11 @@ def _change_status(trip, new_status, body, claims):
 
 
 def _trip_out(item):
-    # DynamoDB item -> data.js trip, plus "pay" worked out like data.js payFor
+    # DynamoDB item -> data.js trip
     trip = {key: item.get(key, default) for key, default in TRIP_DEFAULTS.items()}
     trip["id"] = item["tripId"]
     if not trip["name"]:
         trip["name"] = "New trip"
-    trip["pay"] = _pay_for(trip)
     return _clean(trip)
 
 
@@ -377,7 +357,7 @@ def _get_trip(trip_id):
 
 
 def _apply_edits(trip, body):
-    unknown = [k for k in body if k not in EDITABLE and k not in ("id", "status", "hours", "pay")]
+    unknown = [k for k in body if k not in EDITABLE and k not in ("id", "status", "hours")]
     if unknown:
         raise BadRequest(f"Unknown or read-only field: {', '.join(sorted(unknown))}")
     for key in EDITABLE:
@@ -545,7 +525,6 @@ def _route(method, path, parts, query, body, claims):
         if "id" in body and body["id"] != parts[1]:
             raise BadRequest("A trip's id can't be changed")
         trip = _trip_out(item)
-        trip.pop("pay")
         _apply_edits(trip, body)
         _validate_trip(trip)
         if "status" in body:
@@ -553,13 +532,30 @@ def _route(method, path, parts, query, body, claims):
         trips_table.put_item(Item=_trip_item(trip))
         return _response(200, _trip_out(_trip_item(trip)))
 
+    # DELETE /trips/{id} - data.js only offers "Delete trip" while the trip is ready.
+    # Once the driver starts it, the trip is a record for the funders and stays.
+    if method == "DELETE" and len(parts) == 2 and parts[0] == "trips":
+        try:
+            trips_table.delete_item(
+                Key={"tripId": parts[1]},
+                ConditionExpression="attribute_exists(tripId) AND #s = :ready",
+                ExpressionAttributeNames={"#s": "status"},
+                ExpressionAttributeValues={":ready": "ready"},
+            )
+        except ClientError as err:
+            if err.response["Error"]["Code"] != "ConditionalCheckFailedException":
+                raise
+            if not _get_trip(parts[1]):
+                return _response(404, {"error": "Trip not found"})
+            raise BadRequest("This trip has started, so it can't be deleted.")
+        return _response(200, {"id": parts[1], "deleted": True})
+
     # POST /trips/{id}/complete - the driver sends the trip to the office (started -> sent)
     if method == "POST" and len(parts) == 3 and parts[0] == "trips" and parts[2] == "complete":
         item = _get_trip(parts[1])
         if not item:
             return _response(404, {"error": "Trip not found"})
         trip = _trip_out(item)
-        trip.pop("pay")
         _validate_trip(trip)
         _change_status(trip, "sent", {}, claims)
         trips_table.put_item(Item=_trip_item(trip))
