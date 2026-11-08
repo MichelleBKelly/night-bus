@@ -1,5 +1,5 @@
-@import "tokens.css";
-@import "components.css?v=6";
+@import "tokens.css?v=21";
+@import "components.css?v=44";
 
 *,
 *::before,
@@ -43,6 +43,7 @@ h2 {
   font-size: var(--text-heading);
   font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
+  color: var(--heading);
 }
 
 h3 {
@@ -87,7 +88,7 @@ textarea {
 }
 
 .screen li.list-row {
-  padding: var(--space-1) 0;
+  padding: 14px 0;
 }
 
 .screen nav {
@@ -117,5 +118,20 @@ textarea {
   outline-width: var(--border-focus);
   outline-style: solid;
   outline-color: var(--accent);
-  outline-offset: var(--space-1);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--fill-strong);
+  color: var(--ink);
+}
+
+input,
+textarea {
+  caret-color: var(--accent);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  accent-color: var(--accent);
 }

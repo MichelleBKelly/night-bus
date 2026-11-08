@@ -8,9 +8,6 @@
   margin-inline: auto;
   padding: var(--space-3);
   background: var(--surface);
-  border-inline-width: var(--border);
-  border-inline-style: solid;
-  border-inline-color: var(--line);
 }
 
 .screen-top {
@@ -24,6 +21,49 @@
   align-self: center;
 }
 
+/* Chevrons are drawn, not typed: the wireframe glyphs stay in the markup for screen readers to skip. */
+.back-link > [aria-hidden="true"],
+.profile summary > [aria-hidden="true"],
+.list-row > .trip-row-arrow:last-child {
+  display: inline-block;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  color: transparent;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.back-link > [aria-hidden="true"]::before,
+.profile summary > [aria-hidden="true"]::before,
+.list-row > .trip-row-arrow:last-child::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  background-color: var(--ink);
+  -webkit-mask: var(--chevron) center / contain no-repeat;
+  mask: var(--chevron) center / contain no-repeat;
+}
+
+.back-link > [aria-hidden="true"]::before {
+  transform: scaleX(-1);
+}
+
+.profile summary > [aria-hidden="true"] {
+  font-size: 16px;
+}
+
+.profile summary > [aria-hidden="true"]::before {
+  transform: rotate(90deg);
+}
+
+.profile[open] summary > [aria-hidden="true"]::before {
+  transform: rotate(-90deg);
+}
+
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -31,6 +71,8 @@
   min-height: var(--tap);
   font-weight: var(--weight-bold);
   color: inherit;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 2px;
 }
 
 .profile {
@@ -44,7 +86,9 @@
   align-items: center;
   gap: var(--space-1);
   min-height: var(--tap);
-  padding: var(--space-0) var(--space-1);
+  padding: var(--space-0) var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--fill);
   font-weight: var(--weight-bold);
   list-style: none;
   cursor: pointer;
@@ -56,9 +100,9 @@
 
 .profile-panel {
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--space-1));
   right: var(--space-0);
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
@@ -66,12 +110,17 @@
   min-width: 12em;
   padding: var(--space-2);
   background: var(--surface);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
+  border: var(--border) solid var(--line-soft);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgb(20 39 42 / 0.16);
 }
 
 .profile-panel .btn-secondary {
+  margin-top: var(--space-1);
+}
+
+.profile-panel .text-link {
+  align-self: flex-start;
   margin-top: var(--space-1);
 }
 
@@ -86,9 +135,43 @@
   gap: var(--space-2);
 }
 
-.screen > .plain + .plain,
-.screen > form + .plain {
-  margin-top: var(--space-2);
+.topbar h1 {
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* A new section (heading + content) after another block gets a clear break: 48px in total. */
+.screen > :is(.plain, .card, form) + .plain {
+  margin-top: var(--space-3);
+}
+
+/* Sign-in brand lockup */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+}
+
+.brand-mark {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.brand-name {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--text-heading);
+  font-weight: var(--weight-heavy);
+  line-height: var(--leading-tight);
+}
+
+.brand-org {
+  font-size: var(--text-body);
+  font-weight: var(--weight-regular);
+  color: var(--ink-soft);
 }
 
 .card {
@@ -97,31 +180,94 @@
   gap: var(--space-2);
   padding: var(--space-3);
   background: var(--surface);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
+  border: var(--border) solid var(--line-soft);
   border-radius: var(--radius);
+}
+
+/* The card that holds the screen's one main action is the thing to do next: no outline, a barely-there cyan fill. */
+.card:has(.btn-primary):not(:has(input, textarea)),
+.box:has(.btn-primary):not(:has(input, textarea)) {
+  background: var(--next-fill);
+  border-color: transparent;
+}
+
+:is(.card, .box):has(.btn-primary):not(:has(input, textarea)) .fact {
+  border-bottom-color: var(--next-line);
 }
 
 .summary-box {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-3);
-  background: var(--fill);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
+  gap: var(--space-0);
+  padding: var(--space-1) var(--space-3);
+  background: var(--next-fill);
   border-radius: var(--radius);
+}
+
+/* Who can board: two equal tiles, booked/capacity, with a plain note underneath. */
+.space-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.space-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: var(--space-2) 14px;
+  background: var(--next-fill);
+  border-radius: var(--radius);
+}
+
+/* Three clear steps, darkest to quietest: label, answer, context. Nothing heavier than it needs to be. */
+.space-label {
+  font-size: 16px;
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.space-answer {
+  font-size: 28px;
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.space-note {
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+
+.space-tile.is-over .space-answer,
+.space-tile.is-over .space-note {
+  color: var(--error);
+}
+
+/* Each label and its number sit tight together; a ruled gap separates one pair from the next. */
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-0);
+}
+
+.metric + .metric {
+  border-top: 1px solid var(--line-soft);
+}
+
+.metric-label {
+  font-size: 16px;
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
 }
 
 .banner {
   margin: var(--space-0);
   padding: var(--space-2);
   background: var(--fill);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
   border-radius: var(--radius);
 }
 
@@ -133,7 +279,6 @@
 
 .notice .btn-secondary {
   margin-top: var(--space-1);
-  background: var(--surface);
 }
 
 .notice-title {
@@ -142,6 +287,7 @@
 
 .meta {
   margin: var(--space-0);
+  color: var(--ink-soft);
 }
 
 .status-tag,
@@ -169,8 +315,14 @@
   gap: var(--space-1);
 }
 
+/* Groups inside a card (Times, Kilometres, Pay): their last row's padding already separates them,
+   so only a small extra gap; the card heading gets more room above the first group. */
 .group + .group {
-  margin-top: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.card > h2 + .group {
+  margin-top: var(--space-1);
 }
 
 .group > h3 + .field {
@@ -181,53 +333,75 @@
   margin-top: var(--space-2);
 }
 
+/* Row labels (Start, End, Rate…) step back to grey so the values lead; still 8:1 on white. */
 .group .list-row > :first-child {
   font-weight: var(--weight-regular);
+  color: var(--ink-soft);
 }
 
 .group .list-row > :last-child:not(:first-child) {
   font-weight: var(--weight-bold);
 }
 
+/* Facts read like the ruled lines of the paper trip sheet. */
 .facts {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-0);
   margin: var(--space-0);
 }
 
-/* Label and value flow as one line of text and wrap together, so large text and zoom still read well. */
-.fact dt,
-.fact dd {
-  display: inline;
+.fact {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.fact:first-child {
+  padding-top: var(--space-0);
+}
+
+.fact:last-child {
+  padding-bottom: var(--space-0);
+  border-bottom: 0;
+}
+
+/* Bold label on top, value underneath: people scan a form by its labels. Each wraps on its own line at any zoom. */
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .fact dt {
-  font-weight: var(--weight-regular);
+  font-size: 16px;
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--label, var(--heading));
 }
 
 .fact dd {
   margin: var(--space-0);
-  font-weight: var(--weight-bold);
+  font-size: var(--text-body);
+  font-weight: var(--weight-regular);
 }
 
+/* Bus totals grid: label first in teal, value under it. Only the value has weight, and not much. */
 .tiles {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   margin: var(--space-0);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
+  border: var(--border) solid var(--line-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .tile {
   display: flex;
-  flex-direction: column-reverse;
-  justify-content: flex-end;
-  gap: var(--space-1);
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
   padding: var(--space-2);
-  border-color: var(--line);
+  border-color: var(--line-soft);
   border-style: solid;
   border-width: var(--space-0);
 }
@@ -240,16 +414,24 @@
   border-bottom-width: var(--border);
 }
 
+.tile dt {
+  font-size: 16px;
+  font-weight: var(--weight-medium);
+  color: var(--heading);
+}
+
 .tile dd {
   margin: var(--space-0);
-  font-size: var(--text-heading);
+  font-size: 22px;
   font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
 }
 
 .field-error {
   margin: var(--space-0);
   font-weight: var(--weight-bold);
+  color: var(--error);
 }
 
 details.card {
@@ -271,12 +453,24 @@ details.card {
   display: none;
 }
 
+.totals summary h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
 .totals summary h2::before {
-  content: "▶ " / "";
+  content: "";
+  flex: none;
+  width: 0.8em;
+  height: 0.8em;
+  background: var(--ink);
+  -webkit-mask: var(--chevron) center / contain no-repeat;
+  mask: var(--chevron) center / contain no-repeat;
 }
 
 .totals[open] > summary h2::before {
-  content: "▼ " / "";
+  transform: rotate(90deg);
 }
 
 .totals-body {
@@ -301,6 +495,7 @@ details.card {
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  transition: background-color 120ms ease-out;
 }
 
 /* :visited is listed so the base a:visited rule can't turn a used link button's text dark. */
@@ -311,19 +506,20 @@ details.card {
   border-color: var(--accent);
 }
 
+/* Secondary: a soft teal fill with deep teal text (6:1). Clearly a button, clearly not the main one. */
 .btn-secondary,
 .btn-secondary:visited {
-  background: var(--surface);
-  color: var(--ink);
-  border-color: var(--line);
+  background: var(--fill-strong);
+  color: var(--heading);
+  border-color: transparent;
 }
 
 .btn-primary:disabled,
 .btn-primary[aria-disabled="true"] {
   opacity: 1;
   background: var(--fill);
-  color: var(--ink);
-  border-color: var(--line);
+  color: var(--ink-soft);
+  border-color: var(--line-soft);
 }
 
 .field {
@@ -334,22 +530,28 @@ details.card {
   font-weight: var(--weight-bold);
 }
 
+/* Inputs use a light 1px grey-teal outline (3.0:1, enough to see the box) that turns teal on focus. */
 .field input,
 .field textarea {
   appearance: none;
   width: 100%;
   min-height: var(--tap);
   padding: var(--space-2);
-  border-width: var(--border);
+  border-width: 1px;
   border-style: solid;
-  border-color: var(--line);
-  border-radius: var(--radius);
+  border-color: var(--line-field);
+  border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--ink);
   font-family: var(--font);
   font-size: var(--text-body);
   font-weight: var(--weight-regular);
   line-height: var(--leading);
+}
+
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: var(--error);
 }
 
 .field textarea {
@@ -372,13 +574,13 @@ details.card {
 }
 
 .suggest {
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
 .suggest .list-row[aria-selected="true"] {
-  background: var(--fill);
+  background: var(--fill-strong);
 }
 
 .suggest li:last-child .list-row {
@@ -398,9 +600,9 @@ details.card {
   width: 100%;
   min-height: var(--tap);
   padding: var(--space-1) var(--space-2);
-  border-bottom-width: var(--border);
+  border-bottom-width: 1px;
   border-bottom-style: solid;
-  border-bottom-color: var(--line);
+  border-bottom-color: var(--line-soft);
   color: var(--ink);
   font-size: var(--text-body);
   font-weight: var(--weight-regular);
@@ -414,11 +616,17 @@ button.list-row {
   margin: var(--space-0);
   background: transparent;
   border-width: var(--space-0);
-  border-bottom-width: var(--border);
+  border-bottom-width: 1px;
   border-bottom-style: solid;
-  border-bottom-color: var(--line);
+  border-bottom-color: var(--line-soft);
   border-radius: var(--space-0);
   cursor: pointer;
+}
+
+/* A list ends with its last item: no closing line under it. Boxed trip rows keep their own border. */
+.screen li:last-child > .list-row:not(.trip-row),
+.screen li.list-row:last-child {
+  border-bottom-width: 0;
 }
 
 .list-row > :first-child {
@@ -431,7 +639,7 @@ button.list-row {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-1);
+  gap: 2px;
   font-weight: var(--weight-regular);
   text-align: left;
 }
@@ -442,6 +650,12 @@ button.list-row {
 
 .stack-note {
   font-weight: var(--weight-regular);
+  color: var(--ink-soft);
+}
+
+/* The place itself is what the driver needs: same grey as its label, one weight up. */
+.drop-place {
+  font-weight: var(--weight-medium);
 }
 
 .list-row > :last-child:not(:first-child) {
@@ -469,14 +683,28 @@ button.list-row {
   fill: currentColor;
 }
 
+/* The wheelchair mark is a quiet tag next to the name, not a second headline. */
+.member-name .member-icon {
+  color: var(--icon-soft);
+}
+
+/* Drop-off place (home, office, other) as a teal icon in a soft round chip. */
 .list-row > .drop-icon:last-child {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
   max-width: none;
+  border-radius: 50%;
+  background: var(--next-fill);
+  color: var(--accent);
 }
 
 .drop-icon .member-icon {
-  width: 1.6em;
-  height: 1.6em;
+  width: 24px;
+  height: 24px;
 }
 
 .visually-hidden {
@@ -492,23 +720,53 @@ button.list-row {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-2);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
+  padding: var(--space-3);
+  border: var(--border) solid var(--line-soft);
+  border-radius: var(--radius);
 }
 
 .trip-row {
   padding: var(--space-2);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
+  border: var(--border) solid var(--line-soft);
+  border-radius: var(--radius);
 }
 
-.list-row > .trip-row-arrow:last-child {
-  font-size: var(--text-title);
-  font-weight: var(--weight-bold);
-  line-height: 1;
+.screen li + li > .trip-row {
+  margin-top: var(--space-1);
+}
+
+/* Manage: one grouped list (icon, title, summary, chevron), like a phone's Settings. */
+.screen ul.manage-list {
+  border: var(--border) solid var(--line-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.list-row.manage-row {
+  gap: 14px;
+  padding: 14px var(--space-2);
+}
+
+.list-row.manage-row > .manage-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--next-fill);
+  color: var(--accent);
+}
+
+.manage-icon .member-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.list-row.manage-row > .stack {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .record-row {
@@ -519,12 +777,9 @@ button.list-row {
   font-weight: var(--weight-bold);
 }
 
-.screen li + li > .trip-row {
-  margin-top: var(--space-1);
-}
-
 .list-row[aria-pressed="true"] {
-  background: var(--fill);
+  background: var(--fill-strong);
+  box-shadow: inset 0 0 0 var(--border) var(--accent);
 }
 
 .spot-edit {
@@ -533,9 +788,7 @@ button.list-row {
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-2) var(--space-0);
-  border-bottom-width: var(--border);
-  border-bottom-style: solid;
-  border-bottom-color: var(--line);
+  border-bottom: var(--border) solid var(--line-soft);
 }
 
 .check-row {
@@ -566,22 +819,34 @@ button.list-row {
 .tag {
   display: inline-block;
   flex-shrink: 0;
-  padding: var(--space-1);
+  padding: 4px 12px;
   background: var(--fill);
-  border-width: var(--border);
-  border-style: solid;
-  border-color: var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   font-size: var(--text-body);
   font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
 }
 
+/* A tag inside a toggle row is the tap target's label: outlined until done, filled once done. */
+.tag-action {
+  padding: 6px 12px;
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 var(--border) var(--accent);
+  text-align: center;
+}
+
+[aria-pressed="true"] > .tag-action {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
 .counter {
   margin: var(--space-0);
-  font-size: var(--text-title);
+  font-size: 28px;
   font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
+  font-variant-numeric: tabular-nums;
 }
 
 .table {
@@ -590,6 +855,7 @@ button.list-row {
   border-collapse: collapse;
   font-size: var(--text-body);
   line-height: var(--leading);
+  font-variant-numeric: tabular-nums;
 }
 
 .table caption {
@@ -603,9 +869,7 @@ button.list-row {
 .table th,
 .table td {
   padding: var(--space-2);
-  border-bottom-width: var(--border);
-  border-bottom-style: solid;
-  border-bottom-color: var(--line);
+  border-bottom: var(--border) solid var(--line-soft);
   font-weight: var(--weight-regular);
   text-align: left;
   vertical-align: top;
@@ -615,28 +879,618 @@ button.list-row {
   font-weight: var(--weight-bold);
 }
 
+/* ---------- Driver: the bolder side ---------- */
+
+/* Driver header: plain, like the staff screens. Step and status are a quiet line of text above the title. */
+.masthead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* More air between the top bar (back, status, name) and the step and title it introduces. */
+.masthead > .screen-top + * {
+  margin-top: var(--space-2);
+}
+
+/* The main button closes its group; give the next section clear room to start. */
+.screen > .btn-primary:not(:last-child) {
+  margin-bottom: var(--space-2);
+}
+
+.masthead .status-tag,
+.masthead .step-line {
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+
+.screen[data-role="driver"] .btn-primary {
+  min-height: var(--tap-driver);
+  font-size: var(--text-subheading);
+  font-weight: var(--weight-heavy);
+}
+
+/* Odometer readings: big, even digits that are easy to check against the dashboard. */
+.screen[data-role="driver"] .field input[inputmode="numeric"],
+.screen[data-role="driver"] .field input[inputmode="decimal"] {
+  min-height: 76px;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-reading);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.screen[data-role="driver"] .field input[type="time"] {
+  min-height: var(--tap-driver);
+  font-size: var(--text-heading);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+
+
 @media (hover: hover) {
-  .btn-secondary:hover,
+  .btn-secondary:hover {
+    background: var(--secondary-hover);
+  }
+
   a.list-row:hover,
   button.list-row:hover {
     background: var(--fill);
   }
 
+  .trip-row:hover {
+    border-color: var(--accent);
+  }
+
+  /* The row turns light cyan on hover, so its icon circle flips to white to stay visible. */
+  .manage-row:hover > .manage-icon {
+    background: var(--surface);
+  }
+
+  .profile summary:hover {
+    background: var(--fill-strong);
+  }
+
   .btn-primary:hover {
     background: var(--accent-press);
+    border-color: var(--accent-press);
   }
 
   .btn-primary:disabled:hover,
   .btn-primary[aria-disabled="true"]:hover {
     background: var(--fill);
+    border-color: var(--line-soft);
   }
+}
+
+.btn-secondary:active {
+  background: var(--secondary-hover);
 }
 
 .btn-primary:active {
   background: var(--accent-press);
+  border-color: var(--accent-press);
 }
 
 .btn-primary:disabled:active,
 .btn-primary[aria-disabled="true"]:active {
   background: var(--fill);
+}
+
+/* ---------- Set up this trip ---------- */
+
+/* The status line hugs the title above it. */
+.topbar > h1 + .topbar-status {
+  margin-top: calc(4px - var(--space-2));
+}
+
+/* Form cards breathe more than read-only ones: 24px between fields and groups. */
+.screen > form > .card:not(details) {
+  gap: var(--space-3);
+}
+
+.screen > form > .card > h2 + .group {
+  margin-top: var(--space-0);
+}
+
+/* Text boxes show focus as one 2px teal border, not the global offset outline on top of it.
+   The offset outline doubled up, and inside a scrolling sheet it was clipped to a bar along the top. */
+.field input:focus,
+.field textarea:focus,
+.field input:focus-visible,
+.field textarea:focus-visible {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  outline: none;
+}
+
+/* A hint and the thing it explains stay together. */
+.card-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Where to: one ordered list. Once there's a stop, each row gets a grip column on the left;
+   the × sits inside the stop's box so all boxes share one width. */
+.route-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-0);
+  padding: var(--space-0);
+  list-style: none;
+}
+
+.screen li.route-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+}
+
+.route-list.has-stops > li.route-row {
+  grid-template-columns: 32px 1fr;
+  column-gap: var(--space-1);
+}
+
+.route-row > .field {
+  min-width: 0;
+}
+
+.route-list.has-stops > .route-row > .field {
+  grid-column: 2;
+}
+
+.route-row.is-destination > .field label > span:first-child {
+  color: var(--heading);
+}
+
+.route-box {
+  position: relative;
+  display: block;
+}
+
+.route-box > input {
+  padding-right: 52px;
+}
+
+.route-box > input:only-child {
+  padding-right: var(--space-2);
+}
+
+/* Grip lines up with the box, below the label (label 18px × 1.4 + 8px gap ≈ 33px). */
+.route-grip {
+  display: flex;
+  grid-column: 1;
+  grid-row: 1;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: var(--tap);
+  margin: 33px 0 0 -6px;
+  padding: var(--space-0);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--icon-soft);
+  font-family: var(--font);
+  font-size: 22px;
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+}
+
+.route-grip[hidden] {
+  display: none;
+}
+
+.route-remove {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--icon-soft);
+  font-family: var(--font);
+  font-size: 26px;
+  line-height: 1;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.route-grip:hover,
+.route-remove:hover {
+  background: var(--fill);
+  color: var(--ink);
+}
+
+.route-row.is-dragging {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 6px 20px rgb(20 39 42 / 0.16);
+}
+
+.route-row.is-dragging .route-grip {
+  cursor: grabbing;
+}
+
+/* Who is coming: ticked rows tint and show the member's drop-off under the name. */
+.screen ul.member-picks {
+  margin: var(--space-0) calc(-1 * var(--space-2));
+  padding: var(--space-0);
+  list-style: none;
+}
+
+.screen li.member-pick {
+  display: block;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.screen li.member-pick:last-child {
+  border-bottom: 0;
+}
+
+.member-pick > .check-row,
+.member-pick > .check-row:has(input:checked) {
+  border-bottom: 0;
+  background: transparent;
+}
+
+.member-pick:has(> .check-row input:checked) {
+  background: var(--fill);
+}
+
+.drop-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+  width: 100%;
+  min-height: 40px;
+  margin: -6px var(--space-0) var(--space-0);
+  padding: var(--space-0) var(--space-2) var(--space-1) 60px;
+  background: transparent;
+  border: 0;
+  color: var(--accent-press);
+  font-family: var(--font);
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.drop-link strong {
+  font-weight: var(--weight-semibold);
+}
+
+.drop-link > .trip-row-arrow {
+  display: inline-block;
+  flex: none;
+  width: 0.9em;
+  height: 0.9em;
+  overflow: hidden;
+  color: transparent;
+}
+
+.drop-link > .trip-row-arrow::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--accent-press);
+  -webkit-mask: var(--chevron) center / contain no-repeat;
+  mask: var(--chevron) center / contain no-repeat;
+}
+
+/* A hint under a field belongs to that field: 8px, not the card's 24px. */
+.screen > form > .card > .field + .meta,
+.route-editor > .route-list + .meta {
+  margin-top: calc(var(--space-1) - var(--space-3));
+}
+
+
+
+/* Choice lists in the setup form and in sheets: no rules between options, the tint marks the pick. */
+.screen > form .card .group .check-row,
+.sheet .check-row {
+  border-bottom-width: 0;
+  border-radius: var(--radius-sm);
+}
+
+.screen > form .card .group ul,
+.sheet ul {
+  gap: 4px;
+}
+
+/* Bottom sheet (drop-off choice). Slides up from the bottom on phones, centred card on wider screens. */
+.sheet {
+  width: 100%;
+  max-width: var(--screen-max);
+  max-height: 85dvh;
+  margin: auto auto 0;
+  padding: var(--space-3) var(--space-3) max(var(--space-3), env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--text-body);
+  line-height: var(--leading);
+}
+
+.sheet[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  animation: sheet-up 180ms ease-out;
+}
+
+.sheet::backdrop {
+  background: rgb(20 39 42 / 0.45);
+}
+
+.sheet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.sheet-head h2 {
+  margin: 0;
+  font-size: var(--text-heading);
+  line-height: var(--leading-tight);
+}
+
+.sheet-head .meta {
+  margin-top: 4px;
+}
+
+.sheet-close {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  /* Negative bottom margin: the 48px tap target doesn't make the heading row taller than the title. */
+  margin: -10px -8px -16px 0;
+  padding: 0;
+  background: var(--fill);
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow-y: auto;
+}
+
+/* The sheet lives outside .screen, so it brings its own list reset. */
+.sheet ul {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheet li {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.sheet .list-row.check-row {
+  padding-inline: var(--space-1);
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet[open] { animation: none; }
+}
+
+@media (min-width: 600px) {
+  .sheet {
+    margin: auto;
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* ---------- Sign in ---------- */
+
+/* Names: flat rows, no card. Initial, name over role, and a check circle that fills on the picked person. */
+.screen ul.person-list {
+  gap: 4px;
+  margin-inline: calc(-1 * var(--space-1));
+}
+
+.person-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 64px;
+  margin: 0;
+  padding: var(--space-1);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--text-body);
+  line-height: var(--leading-tight);
+  text-align: left;
+  cursor: pointer;
+}
+
+.person-row:hover {
+  background: var(--next-fill);
+}
+
+.person-row[aria-pressed="true"] {
+  background: var(--fill);
+}
+
+.person-initials {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--fill-strong);
+  color: var(--heading);
+  font-size: 16px;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.02em;
+}
+
+.person-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.person-name {
+  font-weight: var(--weight-bold);
+}
+
+.person-role {
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+
+.person-check {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--line-field);
+}
+
+.person-row[aria-pressed="true"] .person-check {
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 16px no-repeat;
+  box-shadow: none;
+}
+
+.pin-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* The PIN reads as four big spaced dots. */
+#pin {
+  font-size: 24px;
+  letter-spacing: 0.4em;
+  -webkit-text-security: disc;
+}
+
+/* ---------- Text links and danger ---------- */
+
+/* A quiet action: dark grey, underlined, no box. Used for Sign out, Delete trip and sheet cancels. */
+.text-link,
+.text-link:visited {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  margin: 0;
+  padding: 0 4px;
+  background: transparent;
+  border: 0;
+  color: var(--ink-soft);
+  font-family: var(--font);
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.text-link:hover {
+  color: var(--ink);
+}
+
+.text-danger {
+  align-self: center;
+  color: var(--error);
+}
+
+.text-danger:hover {
+  color: #8f1c13;
+}
+
+.btn-primary.btn-danger {
+  background: var(--error);
+  border-color: var(--error);
+}
+
+.btn-primary.btn-danger:hover,
+.btn-primary.btn-danger:active {
+  background: #8f1c13;
+}
+
+.sheet-cancel {
+  align-self: center;
+  margin-top: calc(-1 * var(--space-2));
+}
+
+/* Staff main buttons (Open, Send to Priya, Save changes, Mark as checked) share one height: 56px.
+   Form buttons stay full width, aligned with the cards above them. */
+.screen[data-role="staff"] .btn-primary {
+  min-height: 56px;
+}
+
+/* The trip's name heading its details box is ink, like the trip name on the Pending approval card; section headings stay teal. */
+.trip-head > h2 {
+  color: var(--ink);
+}
+
+/* ---------- Alignment of tappable lists ---------- */
+
+/* Tappable rows (radios, checkboxes, Sign in toggles, drop-off rows) keep their inner padding for the
+   tint, but the list bleeds by that padding so the radio, box or name lines up with the labels above. */
+.screen .card ul:has(> li > :is(button, label).list-row):not(.member-picks):not(.suggest) {
+  margin-inline: calc(-1 * var(--space-2));
+}
+
+.sheet ul:has(> li > :is(button, label).list-row):not(.suggest) {
+  margin-inline: calc(-1 * var(--space-1));
+}
+
+/* A field revealed under a choice (Paid → hourly rate) gets a little air from the options. */
+.group > ul + .field,
+.group > ul + .address-field {
+  margin-top: var(--space-1);
+}
+
+/* The in-place drop-off editor sits inside a bled row, so it adds the padding back before its own list bleeds. */
+.screen .card .spot-edit {
+  padding-inline: var(--space-2);
 }
