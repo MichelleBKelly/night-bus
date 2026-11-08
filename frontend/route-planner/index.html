@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Night Bus Route Planner</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css"
+  >
+  <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: system-ui, sans-serif;
+      background: #f4f6f8;
+      color: #172033;
+    }
+
+    main {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 6px;
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      font: inherit;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.6;
+    }
+
+    #map {
+      width: 100%;
+      height: 450px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e5e7eb;
+    }
+
+    #status {
+      min-height: 24px;
+    }
+
+    .note {
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Night Bus Route Planner</h1>
+
+    <form id="route-form">
+      <label for="origin">Start address or place</label>
+      <input
+        id="origin"
+        type="text"
+        value="Wilfrid Laurier University, Waterloo, Ontario"
+        required
+      >
+
+      <label for="destination">Destination address or place</label>
+      <input
+        id="destination"
+        type="text"
+        value="Conestoga Mall, Waterloo, Ontario"
+        required
+      >
+
+      <label for="stops">
+        Pickup stops — one address or place per line
+      </label>
+      <textarea
+        id="stops"
+        rows="5"
+        placeholder="Waterloo Public Library, Waterloo, Ontario&#10;Waterloo City Hall, Waterloo, Ontario"
+      ></textarea>
+
+      <p class="note">
+        Maximum 15 stops. The planner chooses the pickup order.
+        Start and destination stay fixed.
+      </p>
+
+      <label for="consumption">Fuel consumption — L/100 km</label>
+      <input
+        id="consumption"
+        type="number"
+        min="0.01"
+        step="0.01"
+        placeholder="Enter the bus's consumption"
+        required
+      >
+
+      <label for="fuel-price">Fuel price — CAD per litre</label>
+      <input
+        id="fuel-price"
+        type="number"
+        min="0.01"
+        step="0.01"
+        placeholder="Enter the fuel price"
+        required
+      >
+
+      <button id="calculate-route" type="submit" disabled>
+        Loading map…
+      </button>
+    </form>
+
+    <p class="note">
+      Fuel cost is an estimate based on your inputs.
+      Routing currently uses car mode and does not account for bus restrictions.
+    </p>
+
+    <p id="status" role="status" aria-live="polite">
+      Loading Amazon Location map…
+    </p>
+
+    <div id="map" aria-label="Trip route map"></div>
+  </main>
+  <script src="./config.js"></script>
+  <script>
+    const apiKey = window.ROUTE_PLANNER_CONFIG.mapApiKey;
+    const routeApiUrl = window.ROUTE_PLANNER_CONFIG.routeApiUrl;
+    const region = "us-east-2";
+
+    const form = document.getElementById("route-form");
+    const button = document.getElementById("calculate-route");
+    const status = document.getElementById("status");
+
+    let markers = [];
+    let mapReady = false;
+    let calculating = false;
+
+    function drawRoute(route) {
+      const legs = (route.legs || []).filter(leg => leg.length >= 2);
+
+      if (legs.length === 0) {
+        throw new Error("No route coordinates were returned.");
+      }
+
+      const data = {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "MultiLineString",
+          coordinates: legs
+        }
+      };
+
+      const source = map.getSource("trip-route");
+
+      if (source) {
+        source.setData(data);
+      } else {
+        map.addSource("trip-route", {
+          type: "geojson",
+          data
+        });
+
+        map.addLayer({
+          id: "trip-route-line",
+          type: "line",
+          source: "trip-route",
+          layout: {
+            "line-join": "round",
+            "line-cap": "round"
+          },
+          paint: {
+            "line-color": "#2563eb",
+            "line-width": 6
+          }
+        });
+      }
+
+      markers.forEach(marker => marker.remove());
+      markers = [];
+
+      const points = [
+        legs[0][0],
+        ...legs.map(leg => leg[leg.length - 1])
+      ];
+
+      const stopIds = route.orderedStopIds || [];
+
+      const labels = [
+        "Start",
+        ...stopIds.map((id, index) => `Pickup ${index + 1}: ${id}`),
+        "Destination"
+      ];
+
+      points.forEach((position, index) => {
+        const color =
+          index === 0 ? "#15803d" :
+          index === points.length - 1 ? "#dc2626" :
+          "#2563eb";
+
+        const marker = new maplibregl.Marker({ color })
+          .setLngLat(position)
+          .setPopup(new maplibregl.Popup().setText(labels[index]))
+          .addTo(map);
+
+        markers.push(marker);
+      });
+
+      const bounds = new maplibregl.LngLatBounds();
+
+      legs.forEach(leg => {
+        leg.forEach(position => bounds.extend(position));
+      });
+
+      map.fitBounds(bounds, {
+        padding: 60,
+        maxZoom: 16
+      });
+
+      let summary =
+        `${(route.distanceMeters / 1000).toFixed(2)} km · ` +
+        `${Math.ceil(route.durationSeconds / 60)} minutes driving · ` +
+        `${stopIds.length} pickups`;
+
+      if (route.fuelEstimate) {
+        summary +=
+          ` · Estimated fuel: ${route.fuelEstimate.litres.toFixed(2)} L` +
+          ` · CAD $${route.fuelEstimate.costCad.toFixed(2)}`;
+      }
+
+      status.textContent = summary;
+    }
+
+    const map = new maplibregl.Map({
+      container: "map",
+      style:
+        `https://maps.geo.${region}.amazonaws.com/v2/styles/Standard/descriptor` +
+        `?key=${encodeURIComponent(apiKey)}`,
+      center: [-80.5204, 43.4643],
+      zoom: 13
+    });
+
+    map.addControl(new maplibregl.NavigationControl());
+
+    map.addControl(
+      new maplibregl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true,
+        showUserLocation: true,
+        showAccuracyCircle: true
+      }),
+      "top-right"
+    );
+
+    map.on("load", () => {
+      mapReady = true;
+      button.disabled = false;
+      button.textContent = "Calculate route";
+      status.textContent =
+        "Enter your trip and fuel settings, then calculate.";
+    });
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      if (!mapReady || calculating) {
+        return;
+      }
+
+      const origin = document.getElementById("origin").value.trim();
+      const destination =
+        document.getElementById("destination").value.trim();
+
+      const consumption =
+        Number(document.getElementById("consumption").value);
+
+      const fuelPrice =
+        Number(document.getElementById("fuel-price").value);
+
+      if (
+        !origin ||
+        !destination ||
+        !Number.isFinite(consumption) ||
+        consumption <= 0 ||
+        !Number.isFinite(fuelPrice) ||
+        fuelPrice <= 0
+      ) {
+        status.textContent =
+          "Enter both locations and positive fuel values.";
+        return;
+      }
+
+      // Read stops when the user submits the form.
+      const stopAddresses = document.getElementById("stops").value
+        .split("\n")
+        .map(address => address.trim())
+        .filter(address => address.length > 0);
+
+      if (stopAddresses.length > 15) {
+        status.textContent = "Enter no more than 15 pickup stops.";
+        return;
+      }
+
+      const stops = stopAddresses.map((address, index) => ({
+        id: `pickup-${index + 1}`,
+        position: address
+      }));
+
+      calculating = true;
+      button.disabled = true;
+      button.textContent = "Calculating…";
+      status.textContent =
+        "Looking up locations and calculating your route…";
+
+      try {
+        const response = await fetch(routeApiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            origin,
+            destination,
+            stops,
+            fuelConsumptionLPer100Km: consumption,
+            fuelPriceCadPerLitre: fuelPrice
+          })
+        });
+
+        const text = await response.text();
+        let route;
+
+        try {
+          route = JSON.parse(text);
+        } catch {
+          throw new Error(
+            "The server did not return JSON. Start preview_server.py."
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(route.error || "Route calculation failed.");
+        }
+
+        drawRoute(route);
+      } catch (error) {
+        console.error(error);
+        status.textContent = `Calculation failed: ${error.message}`;
+      } finally {
+        calculating = false;
+        button.disabled = false;
+        button.textContent = "Calculate route";
+      }
+    });
+
+    map.on("error", event => {
+      console.error(event.error);
+
+      if (!mapReady) {
+        status.textContent =
+          "Map failed to load. Check the map API key and localhost restriction.";
+      }
+    });
+  </script>
+</body>
+</html>

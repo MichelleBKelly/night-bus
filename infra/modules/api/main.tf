@@ -85,7 +85,7 @@ data "archive_file" "l2_zip" {
 resource "aws_lambda_function" "l2" {
   function_name    = "${var.name_prefix}-l2"
   role             = aws_iam_role.l2_role.arn
-  handler          = "lambda_function.lambda_handler"
+  handler          = "source.lambda_handler"
   runtime          = "python3.13"
   filename         = data.archive_file.l2_zip.output_path
   source_code_hash = data.archive_file.l2_zip.output_base64sha256
@@ -114,6 +114,18 @@ resource "aws_apigatewayv2_api" "api" {
   }
 }
 
+resource "aws_apigatewayv2_authorizer" "cognito" {
+  api_id           = aws_apigatewayv2_api.api.id
+  authorizer_type  = "JWT"
+  identity_sources = ["$request.header.Authorization"]
+  name             = "${var.name_prefix}-authorizer"
+
+  jwt_configuration {
+    audience = [var.user_pool_client_id]
+    issuer   = "https://cognito-idp.ca-central-1.amazonaws.com/${var.user_pool_id}"
+  }
+}
+
 resource "aws_apigatewayv2_integration" "l2" {
   api_id                 = aws_apigatewayv2_api.api.id
   integration_type       = "AWS_PROXY"
@@ -122,15 +134,19 @@ resource "aws_apigatewayv2_integration" "l2" {
 }
 
 resource "aws_apigatewayv2_route" "proxy" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /{proxy+}"
-  target    = "integrations/${aws_apigatewayv2_integration.l2.id}"
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "ANY /{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.l2.id}"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
 }
 
 resource "aws_apigatewayv2_route" "root" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /"
-  target    = "integrations/${aws_apigatewayv2_integration.l2.id}"
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "ANY /"
+  target             = "integrations/${aws_apigatewayv2_integration.l2.id}"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
 }
 
 resource "aws_apigatewayv2_stage" "default" {
@@ -143,6 +159,29 @@ resource "aws_lambda_permission" "allow_apigw" {
   statement_id  = "AllowAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.l2.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+}
+
+# --- Public login: POST /login -> auth module's login Lambda (no JWT, it hands out the JWT) ---
+resource "aws_apigatewayv2_integration" "login" {
+  api_id                 = aws_apigatewayv2_api.api.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = var.login_function_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "login" {
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "POST /login"
+  target             = "integrations/${aws_apigatewayv2_integration.login.id}"
+  authorization_type = "NONE"
+}
+
+resource "aws_lambda_permission" "allow_apigw_login" {
+  statement_id  = "AllowAPIGatewayLogin"
+  action        = "lambda:InvokeFunction"
+  function_name = var.login_function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }
