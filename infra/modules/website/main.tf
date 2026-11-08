@@ -104,3 +104,48 @@ resource "aws_s3_bucket_policy" "site" {
 
   depends_on = [aws_s3_bucket_public_access_block.site]
 }
+
+# Site content: every file under frontend_dir, keyed by its relative path.
+locals {
+  content_types = {
+    html  = "text/html"
+    htm   = "text/html"
+    css   = "text/css"
+    js    = "application/javascript"
+    mjs   = "application/javascript"
+    json  = "application/json"
+    map   = "application/json"
+    md    = "text/markdown"
+    txt   = "text/plain"
+    xml   = "application/xml"
+    svg   = "image/svg+xml"
+    png   = "image/png"
+    jpg   = "image/jpeg"
+    jpeg  = "image/jpeg"
+    gif   = "image/gif"
+    webp  = "image/webp"
+    ico   = "image/x-icon"
+    woff  = "font/woff"
+    woff2 = "font/woff2"
+    ttf   = "font/ttf"
+    otf   = "font/otf"
+    pdf   = "application/pdf"
+  }
+
+  site_files = fileset(var.frontend_dir, "**")
+}
+
+resource "aws_s3_object" "site" {
+  for_each = local.site_files
+
+  bucket = aws_s3_bucket.site.id
+  key    = each.value
+  source = "${var.frontend_dir}/${each.value}"
+  etag   = filemd5("${var.frontend_dir}/${each.value}")
+
+  content_type = lookup(
+    local.content_types,
+    lower(element(split(".", each.value), length(split(".", each.value)) - 1)),
+    "application/octet-stream"
+  )
+}
