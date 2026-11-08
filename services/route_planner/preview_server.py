@@ -48,7 +48,7 @@ class PreviewHandler(SimpleHTTPRequestHandler):
                     [
                         "aws", "lambda", "invoke",
                         "--function-name", "night-bus-dev-route-planner",
-                        "--region", "us-east-2",
+                        "--region", "ca-central-1",
                         "--profile", "night-bus-dev",
                         "--cli-binary-format", "raw-in-base64-out",
                         "--payload", json.dumps(payload),

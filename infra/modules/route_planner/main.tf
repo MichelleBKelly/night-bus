@@ -94,8 +94,7 @@ resource "aws_apigatewayv2_route" "calculate_route" {
   api_id             = var.api_id
   route_key          = "POST /calculate-route"
   target             = "integrations/${aws_apigatewayv2_integration.route_planner.id}"
-  authorization_type = "JWT"
-  authorizer_id      = var.authorizer_id
+  authorization_type = "NONE"
 }
 
 resource "aws_lambda_permission" "allow_apigw" {
