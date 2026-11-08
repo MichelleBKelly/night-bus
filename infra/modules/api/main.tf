@@ -162,3 +162,26 @@ resource "aws_lambda_permission" "allow_apigw" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }
+
+# --- Public login: POST /login -> auth module's login Lambda (no JWT, it hands out the JWT) ---
+resource "aws_apigatewayv2_integration" "login" {
+  api_id                 = aws_apigatewayv2_api.api.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = var.login_function_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "login" {
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "POST /login"
+  target             = "integrations/${aws_apigatewayv2_integration.login.id}"
+  authorization_type = "NONE"
+}
+
+resource "aws_lambda_permission" "allow_apigw_login" {
+  statement_id  = "AllowAPIGatewayLogin"
+  action        = "lambda:InvokeFunction"
+  function_name = var.login_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+}

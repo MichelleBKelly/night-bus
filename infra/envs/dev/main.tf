@@ -39,6 +39,8 @@ module "api" {
   user_pool_arn       = module.auth.user_pool_arn
   user_pool_id        = module.auth.user_pool_id
   user_pool_client_id = module.auth.user_pool_client_id
+  login_function_arn  = module.auth.login_function_arn
+  login_function_name = module.auth.login_function_name
 }
 
 module "route_planner" {
