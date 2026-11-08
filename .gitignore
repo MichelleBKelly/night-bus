@@ -1,3 +1,4 @@
+
 # Terraform working directories
 .terraform/
 
@@ -14,3 +15,11 @@ crash.*.log
 
 # Environment files
 .env
+build/
+
+# Local route planner configuration
+/frontend/route-planner/config.js
+
+# Python generated files
+__pycache__/
+*.pyc

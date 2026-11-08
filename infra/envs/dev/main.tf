@@ -39,4 +39,15 @@ module "api" {
   user_pool_arn       = module.auth.user_pool_arn
   user_pool_id        = module.auth.user_pool_id
   user_pool_client_id = module.auth.user_pool_client_id
+  login_function_arn  = module.auth.login_function_arn
+  login_function_name = module.auth.login_function_name
+}
+
+module "route_planner" {
+  source = "../../modules/route_planner"
+
+  name_prefix       = "night-bus-dev"
+  api_id            = module.api.api_id
+  api_execution_arn = module.api.execution_arn
+  authorizer_id     = module.api.authorizer_id
 }
